@@ -1,0 +1,39 @@
+:root {
+    --black-color: #0D0630;
+    --td-color: #f1f1f5;
+}
+
+.inspiration-generator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-title {
+    font-size: small;
+}
+
+table {
+    text-align: left;
+    margin-left: 5%;
+}
+
+th {
+    font-size: large;
+    color: var(--black-color);
+}
+
+.td-value {
+    font-size: large;
+    color: var(--td-color);
+}
+
+.dice {
+    font-size: x-large;
+}
+
+.dice:hover, .lock-icon:hover {
+    cursor: pointer;
+    color: var(--td-color);
+}

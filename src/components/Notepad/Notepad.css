@@ -1,0 +1,17 @@
+:root {
+    --black-color: #0D0630;
+    --white-color: #f1f1f5;
+}
+
+textarea {
+    border: solid 5px var(--black-color);
+    border-radius: 5px;
+    margin: 0;
+    padding: 5px;
+    outline: none;
+    background: none;
+    font: inherit;
+    color: var(--white-color);
+    font-size: large;
+    resize: none;
+  }

@@ -1,0 +1,67 @@
+@import "~font-awesome/css/font-awesome.min.css";
+
+:root {
+    --watch-color: #0D0630;
+    --white-color: #f1f1f5;
+}
+
+button {
+    background: none;
+    color: var(--watch-colors);
+}
+
+.pomodoro-timer-class {
+    color: var(--watch-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pomodoro-clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    width: 150px;
+    border: solid 5px var(--watch-color);
+    border-radius: 50%;
+    font-size: xx-large;
+}
+
+.pomodoro-button-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.pomodoro-backward-button, .pomodoro-break-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    width: 25px;
+    margin: 0 2px;
+    /* border: solid 2px var(--watch-color); */
+    border-radius: 50%;
+}
+
+.pomodoro-play-pause-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: xx-large;
+    /* height: 35px; */
+    /* width: 35px; */
+    /* border: solid 2px var(--watch-color); */
+    /* border-radius: 50%; */
+}
+
+.pomodoro-backward-button:hover, .pomodoro-break-button:hover, .pomodoro-play-pause-button:hover {
+    cursor: pointer;
+    color: var(--white-color);
+}
+
+.pomodoro-play-pause-area {
+    border: none;
+}

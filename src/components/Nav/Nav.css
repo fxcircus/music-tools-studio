@@ -1,0 +1,91 @@
+:root {
+    --profile-pic-background-color: hsl(347, 39%, 74%);
+    --li-hover-color: #65D46E;
+    --white-color: #f1f1f5;
+}
+
+p {
+    margin: 2px 10px ;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 1px;    
+}
+
+.nav-item {
+    margin: 0 15px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.export-btn {
+    color: #0D0630;
+    font-weight: bold;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.export-btn:hover {
+    color: #ff4500;
+    transform: scale(1.05);
+}
+
+.circle {
+    width: 50px;
+    height: 50px;
+    background-color: var(--profile-pic-background-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+li:hover {
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    color: #D6A2AD;
+}
+
+.circle:hover {
+    color:#f1f1f5;
+}
+
+.nav-container {
+  position: relative;
+}
+
+.project-title {
+    font-size: small;
+}
+
+.project-date {
+    font-size: xx-small;
+}
+
+.menu-items {
+  position: absolute;
+  top: 100%;
+  right: 20%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+  
+.menu-item {
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    background-color: #333;
+    color: var(--white-color);
+    cursor: pointer;
+    transition: 0.3s;
+}
+  
+.menu-item:hover {
+    background-color: #555;
+}

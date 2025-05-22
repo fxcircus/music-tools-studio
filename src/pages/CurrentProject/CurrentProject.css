@@ -1,0 +1,35 @@
+:root {
+    --black-color: #0D0630;
+    --background-color: #65D46E;
+}
+
+.current-project {
+    color: var(--black-color);
+    background-color: var(--background-color);
+    height: 100vh;
+    text-align: center;
+}
+
+.export-section {
+    margin: 20px 0;
+}
+
+.export-button {
+    padding: 10px 20px;
+    background-color: var(--black-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.export-button:hover {
+    background-color: #1a1248;
+    transform: scale(1.05);
+}
+
+.export-button:active {
+    transform: scale(0.98);
+}

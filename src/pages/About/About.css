@@ -1,0 +1,33 @@
+:root {
+    --black-color: #0D0630;
+    --background-color: #65D46E;
+    --white-color: #f1f1f5;
+    --blue-color: #1B4965;
+}
+
+.about-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--black-color);
+}
+
+.logo-image {
+    max-height: 90px;
+    border: 5px white solid;
+    border-radius: 50%;
+}
+
+.title {
+    color: var(--white-color);
+}
+
+h1, h2, strong{
+    color: var(--white-color)
+}
+
+a {
+    text-decoration: underline;
+    font-size: medium;
+    color: var(--blue-color);
+}
