@@ -12,25 +12,25 @@ interface NotesProps {
 
 const NotesCard = styled(Card)`
   max-width: 100%;
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-direction: column;
   flex: 1;
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.sm};
   }
 `;
 
 const StyledTextArea = styled(TextArea)`
-  min-height: 250px;
+  min-height: 150px;
   flex: 1;
   font-family: 'Inter', 'Roboto', sans-serif;
-  padding: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.sm};
   
   @media (max-width: 768px) {
-    min-height: 200px;
-    padding: ${({ theme }) => theme.spacing.sm};
+    min-height: 120px;
+    padding: ${({ theme }) => theme.spacing.xs};
   }
 `;
 

@@ -13,8 +13,8 @@ interface LoaderProps {
 const MetronomeDisplay = styled.div`
   width: 100%;
   position: relative;
-  height: 150px;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  height: 120px;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@ const MetronomeDisplay = styled.div`
 
 const MetronomePendulum = styled(motion.div)`
   width: 4px;
-  height: 110px;
+  height: 90px;
   background: ${({ theme }) => theme.colors.accentGradient};
   position: relative;
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -44,8 +44,8 @@ const MetronomePendulum = styled(motion.div)`
 `;
 
 const MetronomeBase = styled.div`
-  width: 220px;
-  height: 30px;
+  width: 200px;
+  height: 25px;
   background: ${({ theme }) => theme.colors.accentGradient};
   border-radius: ${({ theme }) => theme.borderRadius.large};
   position: absolute;
@@ -68,8 +68,8 @@ const ControlsContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: ${({ theme }) => theme.spacing.md};
-  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const ButtonGroup = styled.div`
@@ -121,7 +121,7 @@ const BeatIndicator = styled(motion.div)`
 const BeatsRow = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.sm};
   width: 100%;
 `;
 
@@ -131,7 +131,7 @@ const BpmControls = styled.div`
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.sm};
   width: 100%;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
 const IconWrapper = styled.span`

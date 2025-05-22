@@ -13,11 +13,15 @@ interface ToolCardProps {
 
 const StyledToolCard = styled(Card)`
   max-width: 100%;
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 /**
