@@ -365,6 +365,7 @@ export const AppWrapper = styled.div`
 export const CardHeader = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: ${({ theme }) => theme.spacing.md};
   
   @media (max-width: 768px) {
@@ -377,6 +378,7 @@ export const CardTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: 600;
   margin: 0;
+  text-align: center;
 `;
 
 export const CardIconWrapper = styled.span`
@@ -386,4 +388,4 @@ export const CardIconWrapper = styled.span`
   color: ${({ theme }) => theme.colors.primary};
   margin-right: ${({ theme }) => theme.spacing.sm};
   font-size: ${({ theme }) => theme.fontSizes.lg};
-`; 
+`;

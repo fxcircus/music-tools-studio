@@ -94,10 +94,19 @@ const BpmLabel = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
-const ControlsRow = styled.div`
+const ControlsContainer = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
 `;
 
 const ControlButton = styled(motion.button)`
@@ -141,7 +150,7 @@ const BeatIndicator = styled(motion.div)`
 const BeatsRow = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
 const BpmControls = styled.div`
@@ -421,7 +430,6 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
                 
                 <div>
                     <BpmDisplay>{bpm}</BpmDisplay>
-                    <BpmLabel>BPM</BpmLabel>
                 </div>
                 
                 <ControlButton 
@@ -435,7 +443,7 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
                 </ControlButton>
             </BpmControls>
             
-            <ControlsRow>
+            <ControlsContainer>
                 <PlayPauseButton 
                     onClick={toggleMetronome}
                     whileHover={{ scale: 1.1 }} 
@@ -446,16 +454,18 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
                     </IconWrapper>
                 </PlayPauseButton>
                 
-                <ControlButton 
-                    onClick={toggleMute}
-                    whileHover={{ scale: 1.2 }} 
-                    whileTap={{ scale: 0.9 }}
-                >
-                    <IconWrapper>
-                        {muteSound ? <Icon icon={FaVolumeMute} size={24} /> : <Icon icon={FaVolumeUp} size={24} />}
-                    </IconWrapper>
-                </ControlButton>
-            </ControlsRow>
+                <ButtonGroup>
+                    <ControlButton 
+                        onClick={toggleMute}
+                        whileHover={{ scale: 1.2 }} 
+                        whileTap={{ scale: 0.9 }}
+                    >
+                        <IconWrapper>
+                            {muteSound ? <Icon icon={FaVolumeMute} size={24} /> : <Icon icon={FaVolumeUp} size={24} />}
+                        </IconWrapper>
+                    </ControlButton>
+                </ButtonGroup>
+            </ControlsContainer>
             
             <BeatsRow>
                 {beats.map((beat) => (
