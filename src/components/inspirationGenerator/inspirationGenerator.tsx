@@ -34,10 +34,14 @@ interface componentProps {
 // Styled components
 const InspirationCard = styled(Card)`
   max-width: 100%;
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.sm};
+    min-height: 400px;
   }
 `;
 
@@ -50,7 +54,7 @@ const DiceButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   font-size: ${({ theme }) => theme.fontSizes.xxxl};
-  margin: ${({ theme }) => theme.spacing.md} auto;
+  margin: ${({ theme }) => theme.spacing.sm} auto;
   transition: all ${({ theme }) => theme.transitions.fast};
 `;
 
@@ -59,21 +63,27 @@ const ScaleTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.xxl};
   font-weight: 700;
   text-align: center;
-  margin: ${({ theme }) => theme.spacing.md} 0;
+  margin: ${({ theme }) => theme.spacing.sm} 0;
   background: ${({ theme }) => theme.colors.accentGradient};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin: ${({ theme }) => theme.spacing.md} 0;
+  margin: ${({ theme }) => theme.spacing.sm} 0;
+  table-layout: fixed;
 `;
 
 const TableRow = styled.tr`
   transition: all ${({ theme }) => theme.transitions.fast};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  height: 40px;
   
   &:last-child {
     border-bottom: none;
@@ -85,23 +95,41 @@ const TableRow = styled.tr`
 `;
 
 const TableHeader = styled.td`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   width: 40px;
   text-align: center;
   vertical-align: middle;
+  height: 100%;
 `;
 
 const TableCell = styled.td`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   color: ${({ theme }) => theme.colors.textSecondary};
   font-weight: 500;
+  width: 40%;
+  vertical-align: middle;
+  height: 100%;
 `;
 
 const ValueCell = styled.td`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   color: ${({ theme }) => theme.colors.text};
   font-weight: 600;
   text-align: right;
+  width: 50%; 
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+  height: 100%;
+  
+  // Dynamically adjust font size for long content
+  &.long-content {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+  }
+  
+  &.very-long-content {
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+  }
 `;
 
 const LockIconWrapper = styled.div<{ $isLocked: boolean }>`
@@ -133,6 +161,12 @@ const IconWrapper = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+`;
+
+const InspirationCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
 export default function InspirationGenerator({
@@ -333,18 +367,24 @@ export default function InspirationGenerator({
   const toggleLock = (param: keyof LockedState) =>
     setLocked((s) => ({ ...s, [param]: !s[param] }));
 
+  const getValueCellClass = (value: string): string => {
+    if (value.length > 30) return 'very-long-content';
+    if (value.length > 20) return 'long-content';
+    return '';
+  };
+
   return (
     <InspirationCard
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <CardHeader>
+      <InspirationCardHeader>
         <CardIconWrapper>
           <Icon icon={FaMusic} size={20} />
         </CardIconWrapper>
         <CardTitle>Inspiration Generator</CardTitle>
-      </CardHeader>
+      </InspirationCardHeader>
       
       <ScaleTitle>{rootEl} {scaleEl}</ScaleTitle>
       
@@ -400,7 +440,7 @@ export default function InspirationGenerator({
           <TableRow>
             <TableHeader />
             <TableCell>Scale Tones</TableCell>
-            <ValueCell>{computedScaleNotes}</ValueCell>
+            <ValueCell className={getValueCellClass(computedScaleNotes)}>{computedScaleNotes}</ValueCell>
           </TableRow>
 
           <TableRow>
@@ -424,7 +464,7 @@ export default function InspirationGenerator({
               </LockIconWrapper>
             </TableHeader>
             <TableCell>Sound</TableCell>
-            <ValueCell>{soundEl}</ValueCell>
+            <ValueCell className={getValueCellClass(soundEl)}>{soundEl}</ValueCell>
           </TableRow>
         </tbody>
       </StyledTable>
