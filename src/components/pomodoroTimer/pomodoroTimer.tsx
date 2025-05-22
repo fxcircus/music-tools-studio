@@ -2,18 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaUndo, FaPlay, FaPause, FaCoffee, FaClock } from 'react-icons/fa';
-import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
+import ToolCard from '../common/ToolCard';
 import { Icon } from '../../utils/IconHelper';
 
 // Styled components
-const TimerCard = styled(Card)`
-  max-width: 100%;
-  padding: ${({ theme }) => theme.spacing.lg};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 const TimerDisplay = styled(motion.div)`
   background-color: ${({ theme }) => theme.colors.timerBackground};
   border: 4px solid ${({ theme }) => theme.colors.primary};
@@ -117,18 +109,7 @@ export default function PomodoroTimer() {
   }, [isCounting, time]);
 
   return (
-    <TimerCard 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <CardHeader>
-        <CardIconWrapper>
-          <Icon icon={FaClock} size={20} />
-        </CardIconWrapper>
-        <CardTitle>Flow Timer</CardTitle>
-      </CardHeader>
-      
+    <ToolCard title="Flow Timer" icon={FaClock}>
       <TimerDisplay
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
@@ -165,6 +146,6 @@ export default function PomodoroTimer() {
           <IconWrapper><Icon icon={FaCoffee} size={20} /></IconWrapper>
         </TimerButton>
       </TimerControls>
-    </TimerCard>
+    </ToolCard>
   );
 }

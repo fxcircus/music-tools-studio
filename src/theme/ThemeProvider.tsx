@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { saveToStorage, getFromStorage, STORAGE_KEYS } from '../utils/storageService';
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -137,13 +138,12 @@ export const darkTheme = {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('musicToolsTheme');
-    return savedTheme === 'dark' || 
-      (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    return getFromStorage(STORAGE_KEYS.THEME, 'dark') === 'dark' || 
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
-    localStorage.setItem('musicToolsTheme', isDarkMode ? 'dark' : 'light');
+    saveToStorage(STORAGE_KEYS.THEME, isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
   const toggleTheme = () => {

@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Container } from '../../components/common/StyledComponents';
@@ -6,6 +6,8 @@ import PomodoroTimer from "../../components/pomodoroTimer/pomodoroTimer";
 import InspirationGenerator from "../../components/inspirationGenerator/inspirationGenerator";
 import NotePad from "../../components/Notepad/Notepad";
 import Metronome from "../../components/Metronome/Metronome";
+import { MusicToolsState } from "../../utils/types";
+import { loadAppState, saveAppState } from "../../utils/storageService";
 
 interface LoaderProps {
     result?: string;
@@ -55,56 +57,17 @@ const GridItem = styled(motion.div)<{ $order?: number }>`
 `;
 
 const CurrentProject: FC<LoaderProps> = () => {
-    const [notes, setNotes] = useState<string>('');
+    const [state, setState] = useState<MusicToolsState>(loadAppState());
     const [animate, setAnimate] = useState(false);
-    const [rootEl, setRootEl] = useState("C");
-    const [scaleEl, setScaleEl] = useState("Major");
-    const [tonesEl, setTonesEl] = useState("T - T - S - T - T - T - S");
-    const [tonesArrEl, setTonesArrEl] = useState<string[]>(["C", "D", "E", "F", "G", "A", "B", "C"]);
-    const [bpmEl, setBpmEl] = useState("100");
-    const [soundEl, setSoundEl] = useState("Guitar");
 
-    useEffect(() => {
-        // Load all values from localStorage when component mounts
-        const savedNotes = localStorage.getItem('musicToolsNotes');
-        if (savedNotes) {
-            setNotes(savedNotes);
-        }
-        
-        const savedRootEl = localStorage.getItem('musicToolsRootEl');
-        if (savedRootEl) {
-            setRootEl(savedRootEl);
-        }
-        
-        const savedScaleEl = localStorage.getItem('musicToolsScaleEl');
-        if (savedScaleEl) {
-            setScaleEl(savedScaleEl);
-        }
-        
-        const savedTonesEl = localStorage.getItem('musicToolsTonesEl');
-        if (savedTonesEl) {
-            setTonesEl(savedTonesEl);
-        }
-        
-        const savedTonesArrEl = localStorage.getItem('musicToolsTonesArrEl');
-        if (savedTonesArrEl) {
-            try {
-                setTonesArrEl(JSON.parse(savedTonesArrEl));
-            } catch (error) {
-                console.error("Error parsing tonesArrEl from localStorage:", error);
-            }
-        }
-        
-        const savedBpmEl = localStorage.getItem('musicToolsBpmEl');
-        if (savedBpmEl) {
-            setBpmEl(savedBpmEl);
-        }
-        
-        const savedSoundEl = localStorage.getItem('musicToolsSoundEl');
-        if (savedSoundEl) {
-            setSoundEl(savedSoundEl);
-        }
-    }, []);
+    // Update state and save to localStorage whenever a component of state changes
+    const updateState = (newState: Partial<MusicToolsState>) => {
+        setState(prevState => {
+            const updatedState = { ...prevState, ...newState };
+            saveAppState(updatedState);
+            return updatedState;
+        });
+    };
 
     // Component variants for animations
     const containerVariants = {
@@ -135,22 +98,32 @@ const CurrentProject: FC<LoaderProps> = () => {
                 
                 <GridItem variants={itemVariants} $order={1}>
                     <InspirationGenerator 
-                        animate={animate}   setAnimate={setAnimate}
-                        rootEl={rootEl}     setRootEl={setRootEl}
-                        scaleEl={scaleEl}   setScaleEl={setScaleEl}
-                        tonesEl={tonesEl}   setTonesEl={setTonesEl}
-                        tonesArrEl={tonesArrEl} setTonesArrEl={setTonesArrEl}
-                        bpmEl={bpmEl}       setBpmEl={setBpmEl}
-                        soundEl={soundEl}   setSoundEl={setSoundEl}
+                        animate={animate}
+                        setAnimate={setAnimate}
+                        rootEl={state.rootEl}
+                        setRootEl={(rootEl) => updateState({ rootEl })}
+                        scaleEl={state.scaleEl}
+                        setScaleEl={(scaleEl) => updateState({ scaleEl })}
+                        tonesEl={state.tonesEl}
+                        setTonesEl={(tonesEl) => updateState({ tonesEl })}
+                        tonesArrEl={state.tonesArrEl}
+                        setTonesArrEl={(tonesArrEl) => updateState({ tonesArrEl })}
+                        bpmEl={state.bpmEl}
+                        setBpmEl={(bpmEl) => updateState({ bpmEl })}
+                        soundEl={state.soundEl}
+                        setSoundEl={(soundEl) => updateState({ soundEl })}
                     />
                 </GridItem>
                 
                 <GridItem variants={itemVariants} $order={3}>
-                    <NotePad notes={notes} setNotes={setNotes} />
+                    <NotePad 
+                        notes={state.notes} 
+                        setNotes={(notes) => updateState({ notes })} 
+                    />
                 </GridItem>
                 
                 <GridItem variants={itemVariants} $order={2}>
-                    <Metronome bpm={parseInt(bpmEl, 10)} />
+                    <Metronome bpm={parseInt(state.bpmEl, 10)} />
                 </GridItem>
             </TwoColumnGrid>
         </PageContainer>
