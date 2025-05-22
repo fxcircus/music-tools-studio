@@ -14,6 +14,8 @@ A simple set of tools to help musicians stay creative and focused.
 
 - **Save Your Work**: Export your project settings and notes to continue later or share with collaborators. Import previously saved projects with a single click.
 
+- **Dark / Light Modes**: Because of course there's a dark mode.
+
 ## Technologies Used
 
 - React + TypeScript

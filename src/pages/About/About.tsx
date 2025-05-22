@@ -178,6 +178,12 @@ const AboutPage = () => {
                 <ListItem>Save or load your project as a JSON file to pick up where you left off or share with others.</ListItem>
               </NestedList>
             </ListItem>
+            <ListItem>
+              <Strong>🌓 Dark / Light Modes:</Strong>
+              <NestedList>
+                <ListItem>Because of course there's a dark mode.</ListItem>
+              </NestedList>
+            </ListItem>
           </List>
         </Section>
         
