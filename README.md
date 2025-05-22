@@ -1,4 +1,4 @@
-# Music Tools Studio
+# Tiles — Tools for Creative Flow
 
 A simple set of tools to help musicians stay creative and focused.
 
@@ -6,15 +6,15 @@ A simple set of tools to help musicians stay creative and focused.
 
 - **Flow Timer**: A Pomodoro-style timer to help you stay focused while writing, practicing, or producing.
 
-- **Inspiration Generator**: Get instant musical ideas with random root notes, scales, BPM, and instrument suggestions. Lock in what you like and shuffle the rest.
+- **Inspiration Generator**: Randomize scales, BPM, and sounds. Lock in what you like and shuffle the rest.
 
 - **Metronome**: A smooth, visual metronome with BPM controls to keep you in perfect time.
 
-- **Notes**: Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.
+- **Notes**: Capture lyrics, chord progressions, FX pedal settings, etc'...
 
 - **Save Your Work**: Export your project settings and notes to continue later or share with collaborators. Import previously saved projects with a single click.
 
-- **Dark / Light Modes**: Because of course there's a dark mode.
+- **Dark / Light Modes**: Yes.
 
 ## Technologies Used
 
@@ -30,7 +30,7 @@ Check out the [live version](https://fxcircus.github.io/music-tools-studio) or v
 
 ## Screenshots
 
-![Music Tools Studio](build/app_screenshot_dark_2025.png)
+![Tiles](public/project_page_screenshot.png)
 
 ## Installation
 
@@ -42,3 +42,7 @@ npm start
 ```
 
 The app will run in development mode at [http://localhost:3000](http://localhost:3000).
+
+## Note on Repository Name
+
+While the app has been rebranded to "Tiles", the repository name and some internal filenames still reference "music-tools-studio" for continuity. These will be updated in a future release.
