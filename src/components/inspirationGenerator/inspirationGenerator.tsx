@@ -267,39 +267,64 @@ export default function InspirationGenerator({
 
   const getRandomIndex = (n: number) => Math.floor(Math.random() * n);
 
+  const getRandomValueDifferentFromCurrent = (array: string[], current: string): string => {
+    if (array.length <= 1) return current; // If only one option, we can't change
+    
+    let newValue;
+    do {
+      newValue = array[getRandomIndex(array.length)];
+    } while (newValue === current && array.length > 1);
+    
+    return newValue;
+  };
+  
+  const getRandomBpmDifferentFromCurrent = (min: number, max: number, current: string): string => {
+    if (max - min <= 1) return current; // If only one option, we can't change
+    
+    const currentBpm = parseInt(current);
+    let newBpm;
+    
+    do {
+      newBpm = getRandomIndex(max + 1);
+      if (newBpm < min) newBpm = min;
+    } while (newBpm === currentBpm && max - min > 1);
+    
+    return newBpm.toString();
+  };
+
   const rollDice = () => {
     setAnimate(false);
 
     // ROOT
-    const newRoot = locked.root
-      ? rootEl
-      : roots[getRandomIndex(roots.length)];
-    if (!locked.root) setRootEl(newRoot);
+    if (!locked.root) {
+      const newRoot = getRandomValueDifferentFromCurrent(roots, rootEl);
+      setRootEl(newRoot);
+    }
 
     // SCALE + original pattern
-    const newScale = locked.scale
-      ? scaleEl
-      : scales[getRandomIndex(scales.length)];
     if (!locked.scale) {
+      const newScale = getRandomValueDifferentFromCurrent(scales, scaleEl);
       setScaleEl(newScale);
       setTonesEl(scalePatterns[newScale as keyof typeof scalePatterns]);
     }
 
     // COMPUTED scale tones with dashes/spaces
+    const newRoot = locked.root ? rootEl : getRandomValueDifferentFromCurrent(roots, rootEl);
+    const newScale = locked.scale ? scaleEl : getRandomValueDifferentFromCurrent(scales, scaleEl);
     const tonesArr = generateScaleTonesMemoized(newRoot, newScale);
     setComputedScaleNotes(tonesArr.join(" - "));
     setTonesArrEl(tonesArr);
 
     // SOUND
     if (!locked.sound) {
-      setSoundEl(sounds[getRandomIndex(sounds.length)]);
+      const newSound = getRandomValueDifferentFromCurrent(sounds, soundEl);
+      setSoundEl(newSound);
     }
 
     // BPM
     if (!locked.bpm) {
-      let bpmVal = getRandomIndex(maxBpm + 1);
-      if (bpmVal < minBpm) bpmVal = minBpm;
-      setBpmEl(bpmVal.toString());
+      const newBpm = getRandomBpmDifferentFromCurrent(minBpm, maxBpm, bpmEl);
+      setBpmEl(newBpm);
     }
 
     setAnimate(true);
