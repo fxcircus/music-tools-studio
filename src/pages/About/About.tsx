@@ -131,7 +131,7 @@ const AboutPage = () => {
         </CardHeader>
         
         <LogoContainer>
-          <Logo src={process.env.PUBLIC_URL + '/logo.png'} alt="Music Tools Logo" />
+          <Logo src={process.env.PUBLIC_URL + '/logo_2025.png'} alt="Music Tools Logo" />
         </LogoContainer>
         
         <Section>
