@@ -14,8 +14,22 @@ export const Card = styled(motion.div)`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   box-shadow: ${({ theme }) => theme.shadows.medium};
   padding: ${({ theme }) => theme.spacing.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: 0;
   transition: all ${({ theme }) => theme.transitions.normal};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.large};
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.md};
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+  }
 `;
 
 export const Row = styled.div`
@@ -345,4 +359,31 @@ export const AppWrapper = styled.div`
   color: ${({ theme }) => theme.colors.text};
   transition: all ${({ theme }) => theme.transitions.normal};
   font-family: 'Inter', 'Roboto', sans-serif;
+`;
+
+// Create a consistent header component for all cards
+export const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
+`;
+
+export const CardTitle = styled.h3`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-weight: 600;
+  margin: 0;
+`;
+
+export const CardIconWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.primary};
+  margin-right: ${({ theme }) => theme.spacing.sm};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
 `; 

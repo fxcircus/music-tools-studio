@@ -4,12 +4,12 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaDice, FaLock, FaUnlock, FaMusic } from 'react-icons/fa';
-import { Card, Subtitle, StyledTable, TableHeader, TableCell, ValueCell } from '../common/StyledComponents';
+import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
 type LockedState = {
   root: boolean;
-  scaleAndTones: boolean;
+  scale: boolean;
   bpm: boolean;
   sound: boolean;
 };
@@ -33,10 +33,12 @@ interface componentProps {
 
 // Styled components
 const InspirationCard = styled(Card)`
-  max-width: 600px;
-  margin: 0 auto;
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
+  max-width: 100%;
+  padding: ${({ theme }) => theme.spacing.lg};
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const DiceButton = styled(motion.button)`
@@ -52,12 +54,54 @@ const DiceButton = styled(motion.button)`
   transition: all ${({ theme }) => theme.transitions.fast};
 `;
 
+const ScaleTitle = styled.h3`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  font-weight: 700;
+  text-align: center;
+  margin: ${({ theme }) => theme.spacing.md} 0;
+  background: ${({ theme }) => theme.colors.accentGradient};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin: ${({ theme }) => theme.spacing.md} 0;
+`;
+
 const TableRow = styled.tr`
   transition: all ${({ theme }) => theme.transitions.fast};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  
+  &:last-child {
+    border-bottom: none;
+  }
   
   &:hover {
     background-color: ${({ theme }) => `${theme.colors.primary}11`};
   }
+`;
+
+const TableHeader = styled.td`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  width: 40px;
+  text-align: center;
+  vertical-align: middle;
+`;
+
+const TableCell = styled.td`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-weight: 500;
+`;
+
+const ValueCell = styled.td`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 600;
+  text-align: right;
 `;
 
 const LockIconWrapper = styled.div<{ isLocked: boolean }>`
@@ -71,16 +115,11 @@ const LockIconWrapper = styled.div<{ isLocked: boolean }>`
   }
 `;
 
-const GeneratorHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const GeneratorSubtitle = styled(Subtitle)`
+const GeneratorSubtitle = styled.p`
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const SubtitleText = styled.p`
@@ -114,7 +153,7 @@ export default function InspirationGenerator({
 }: componentProps) {
   const [locked, setLocked] = useState<LockedState>({
     root: false,
-    scaleAndTones: false,
+    scale: false,
     bpm: false,
     sound: false,
   });
@@ -243,10 +282,10 @@ export default function InspirationGenerator({
     if (!locked.root) setRootEl(newRoot);
 
     // SCALE + original pattern
-    const newScale = locked.scaleAndTones
+    const newScale = locked.scale
       ? scaleEl
       : scales[getRandomIndex(scales.length)];
-    if (!locked.scaleAndTones) {
+    if (!locked.scale) {
       setScaleEl(newScale);
       setTonesEl(scalePatterns[newScale as keyof typeof scalePatterns]);
     }
@@ -280,10 +319,15 @@ export default function InspirationGenerator({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <GeneratorHeader>
-        <GeneratorSubtitle>Inspiration Generator</GeneratorSubtitle>
-      </GeneratorHeader>
-
+      <CardHeader>
+        <CardIconWrapper>
+          <Icon icon={FaMusic} size={20} />
+        </CardIconWrapper>
+        <CardTitle>Inspiration Generator</CardTitle>
+      </CardHeader>
+      
+      <ScaleTitle>{rootEl} {scaleEl}</ScaleTitle>
+      
       <DiceButton
         whileHover={{ rotate: 12, scale: 1.1 }}
         whileTap={{ rotate: 360, scale: 0.9 }}
@@ -298,7 +342,10 @@ export default function InspirationGenerator({
         <tbody>
           <TableRow>
             <TableHeader>
-              <LockIconWrapper isLocked={locked.root} onClick={() => toggleLock("root")}>
+              <LockIconWrapper 
+                isLocked={locked.root} 
+                onClick={() => toggleLock("root")}
+              >
                 <IconWrapper>
                   {locked.root ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
                 </IconWrapper>
@@ -311,11 +358,11 @@ export default function InspirationGenerator({
           <TableRow>
             <TableHeader>
               <LockIconWrapper 
-                isLocked={locked.scaleAndTones} 
-                onClick={() => toggleLock("scaleAndTones")}
+                isLocked={locked.scale} 
+                onClick={() => toggleLock("scale")}
               >
                 <IconWrapper>
-                  {locked.scaleAndTones ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
+                  {locked.scale ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
                 </IconWrapper>
               </LockIconWrapper>
             </TableHeader>
@@ -323,9 +370,8 @@ export default function InspirationGenerator({
             <ValueCell>{scaleEl}</ValueCell>
           </TableRow>
 
-          {/* original pattern */}
           <TableRow>
-            <TableHeader />
+            <TableHeader></TableHeader>
             <TableCell>Tones</TableCell>
             <ValueCell>{tonesEl}</ValueCell>
           </TableRow>

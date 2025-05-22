@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Card, Title, TextArea } from '../common/StyledComponents';
+import { Card, TextArea, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { FaStickyNote } from 'react-icons/fa';
 import { Icon } from '../../utils/IconHelper';
 
@@ -11,31 +11,27 @@ interface NotesProps {
 }
 
 const NotesCard = styled(Card)`
-  max-width: 800px;
-  margin: 0 auto;
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
-`;
-
-const NotepadHeader = styled.div`
+  max-width: 100%;
+  padding: ${({ theme }) => theme.spacing.lg};
   display: flex;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const IconWrapper = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.colors.primary};
-  margin-right: ${({ theme }) => theme.spacing.sm};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  flex-direction: column;
+  flex: 1;
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const StyledTextArea = styled(TextArea)`
   min-height: 250px;
+  flex: 1;
   font-family: 'Inter', 'Roboto', sans-serif;
   padding: ${({ theme }) => theme.spacing.md};
+  
+  @media (max-width: 768px) {
+    min-height: 200px;
+    padding: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 export default function Notes({ notes, setNotes }: NotesProps) {
@@ -69,12 +65,12 @@ export default function Notes({ notes, setNotes }: NotesProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
     >
-      <NotepadHeader>
-        <IconWrapper>
+      <CardHeader>
+        <CardIconWrapper>
           <Icon icon={FaStickyNote} size={20} />
-        </IconWrapper>
-        <Title>Notes</Title>
-      </NotepadHeader>
+        </CardIconWrapper>
+        <CardTitle>Notes</CardTitle>
+      </CardHeader>
       
       <StyledTextArea
         name="newText"

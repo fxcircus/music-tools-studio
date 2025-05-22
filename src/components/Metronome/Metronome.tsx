@@ -2,24 +2,24 @@ import React, { FC, useEffect, useState, useRef, useCallback } from "react";
 import * as Tone from 'tone';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaVolumeMute, FaVolumeUp, FaPlay, FaPause, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaVolumeMute, FaVolumeUp, FaPlay, FaPause, FaPlus, FaMinus, FaDrum } from 'react-icons/fa';
 import { Icon } from '../../utils/IconHelper';
+import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 
 interface LoaderProps {
     bpm: number;
 }
 
-const MetronomeCard = styled(motion.div)`
-  background-color: ${({ theme }) => theme.colors.card};
-  border-radius: ${({ theme }) => theme.borderRadius.medium};
-  box-shadow: ${({ theme }) => theme.shadows.medium};
+const MetronomeCard = styled(Card)`
+  max-width: 100%;
   padding: ${({ theme }) => theme.spacing.lg};
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: ${({ theme }) => theme.spacing.xl};
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const MetronomeTitle = styled.h3`
@@ -254,12 +254,12 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <MetronomeTitle>
-                <IconWrapper>
-                    {metronomePlaying ? <Icon icon={FaPlay} size={18} /> : <Icon icon={FaPause} size={18} />}
-                </IconWrapper>
-                Metronome
-            </MetronomeTitle>
+            <CardHeader>
+                <CardIconWrapper>
+                    <Icon icon={FaDrum} size={20} />
+                </CardIconWrapper>
+                <CardTitle>Metronome</CardTitle>
+            </CardHeader>
             
             <MetronomeDisplay>
                 <MetronomeBase />

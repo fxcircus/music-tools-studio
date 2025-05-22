@@ -12,7 +12,11 @@ interface LoaderProps {
 }
 
 const PageContainer = styled(Container)`
-  padding-bottom: ${({ theme }) => theme.spacing.xxl};
+  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.md} ${theme.spacing.xxl}`};
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.sm} ${theme.spacing.xl}`};
+  }
 `;
 
 const TwoColumnGrid = styled.div`
@@ -22,11 +26,28 @@ const TwoColumnGrid = styled.div`
   
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.sm};
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.xs};
   }
 `;
 
 const GridItem = styled(motion.div)`
   height: 100%;
+  display: flex;
+  
+  & > * {
+    flex: 1;
+    width: 100%;
+    margin-top: ${({ theme }) => theme.spacing.md};
+    
+    @media (max-width: 768px) {
+      margin-top: ${({ theme }) => theme.spacing.sm};
+    }
+  }
 `;
 
 const CurrentProject: FC<LoaderProps> = () => {

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaUndo, FaPlay, FaPause, FaCoffee } from 'react-icons/fa';
-import { Card, Title } from '../common/StyledComponents';
+import { FaUndo, FaPlay, FaPause, FaCoffee, FaClock } from 'react-icons/fa';
+import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
 // Styled components
 const TimerCard = styled(Card)`
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
+  max-width: 100%;
+  padding: ${({ theme }) => theme.spacing.lg};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,7 +122,12 @@ export default function PomodoroTimer() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Title>Focus Timer</Title>
+      <CardHeader>
+        <CardIconWrapper>
+          <Icon icon={FaClock} size={20} />
+        </CardIconWrapper>
+        <CardTitle>Flow Timer</CardTitle>
+      </CardHeader>
       
       <TimerDisplay
         initial={{ scale: 0.9 }}
