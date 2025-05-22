@@ -9,16 +9,18 @@ interface NotesProps {
 export default function Notes({ notes, setNotes }: NotesProps) {
   const [text, setText] = useState<{ newText: string }>({ newText: '' });
 
-  // Load notes from localStorage on component mount
+  // Load notes from localStorage on component mount and when notes prop changes
   useEffect(() => {
-    const savedNotes = localStorage.getItem('musicToolsNotes');
-    if (savedNotes) {
-      setText({ newText: savedNotes });
-      setNotes(savedNotes);
-    } else if (notes) {
+    if (notes) {
       setText({ newText: notes });
+    } else {
+      const savedNotes = localStorage.getItem('musicToolsNotes');
+      if (savedNotes) {
+        setText({ newText: savedNotes });
+        setNotes(savedNotes);
+      }
     }
-  }, []);
+  }, [notes, setNotes]);
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;

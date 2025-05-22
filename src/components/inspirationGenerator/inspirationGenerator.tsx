@@ -1,6 +1,6 @@
 // src/components/Generator/Generator.tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./inspirationGenerator.css";
 import Metronome from "../Metronome/Metronome";
 
@@ -50,6 +50,31 @@ export default function InspirationGenerator({
     bpm: false,
     sound: false,
   });
+
+  // Update localStorage whenever values change
+  useEffect(() => {
+    localStorage.setItem('musicToolsRootEl', rootEl);
+  }, [rootEl]);
+
+  useEffect(() => {
+    localStorage.setItem('musicToolsScaleEl', scaleEl);
+  }, [scaleEl]);
+
+  useEffect(() => {
+    localStorage.setItem('musicToolsTonesEl', tonesEl);
+  }, [tonesEl]);
+
+  useEffect(() => {
+    localStorage.setItem('musicToolsTonesArrEl', JSON.stringify(tonesArrEl));
+  }, [tonesArrEl]);
+
+  useEffect(() => {
+    localStorage.setItem('musicToolsBpmEl', bpmEl);
+  }, [bpmEl]);
+
+  useEffect(() => {
+    localStorage.setItem('musicToolsSoundEl', soundEl);
+  }, [soundEl]);
 
   // 12 chromatic notes (using Unicode ♯)
   const notes = [
@@ -107,6 +132,13 @@ export default function InspirationGenerator({
   const [computedScaleNotes, setComputedScaleNotes] = useState<string>(
     initialScaleTones
   );
+
+  // Update computed scale tones whenever root or scale changes
+  useEffect(() => {
+    const tonesArr = generateScaleTones(rootEl, scaleEl);
+    setComputedScaleNotes(tonesArr.join(" - "));
+    setTonesArrEl(tonesArr);
+  }, [rootEl, scaleEl, setTonesArrEl]);
 
   const maxBpm = 140;
   const minBpm = 75;
@@ -166,7 +198,7 @@ export default function InspirationGenerator({
     <div className="inspiration-generator">
       <p className="sub-title">
         <b><u>Inspiration generator:</u></b><br />
-        Roll the dice to generate a random rule set
+        Roll the dice to generate a random rule set!
       </p>
 
       <i
