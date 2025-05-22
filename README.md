@@ -1,44 +1,40 @@
-# AI Music Producer
+# Music Tools Studio
 
-AI Music Producer is an innovative tool that empowers musicians to craft music in the style of their favorite artists with the help of AI technology.
+A simple set of tools to help musicians stay creative and focused.
 
-## How it Works
+## Features
 
-1. **Artist Selection**: Begin by inputting the name of your favorite artist or band.
+- **Flow Timer**: A Pomodoro-style timer to help you stay focused while writing, practicing, or producing.
 
-2. **AI Insights**: The app queries OpenAI's GPT engine to provide you with insightful instructions and inspiring ideas on how to compose music in the distinct style of your chosen artist.
+- **Inspiration Generator**: Get instant musical ideas with random root notes, scales, BPM, and instrument suggestions. Lock in what you like and shuffle the rest.
 
-3. **Project Page**: Dive into the creative process on a dedicated project page that breaks down the musical composition into key sections: Intro, Verse, Chorus, Bridge, and Outro.
+- **Metronome**: A smooth, visual metronome with BPM controls to keep you in perfect time.
 
-4. **Comprehensive Tools**: The project page is also equipped with an array of valuable songwriting tools, including:
-   - **Inspiration and Rule Set Generator**: Generate a random rule set including Song key, BPM, and Sound ides
-   - **Metronome**: The BPM is set by the inspiration generator
-   - **Pomodoro Timer**: Stay focused and productive with timed work sessions
-   - **Note-Taking Area**: Capture your thoughts, ideas, and musical concepts as they flow
-   - **Expert Advice**: Receive valuable songwriting insights in the style of renowned producers and musicians such as Rick Rubin, Jeff Tweedy, and more!
+- **Notes**: Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.
 
 ## Technologies Used
 
-- React
-- Typescript
-- openAPI GPT 3.5 Turbo engine
-- Freepik AI Image Generator (logo) image
-- Figma for wireframing
-- Font Awesome for icons
-- Metronone icon created by [Freepik - Flaticon](https://www.flaticon.com/free-icons/tempo)
-- [Tone.js](https://www.npmjs.com/package/tone) for generating metronome tone
+- React + TypeScript
+- Tone.js for metronome audio engine
+- Framer Motion for fluid animations 
+- Web Audio API
+- Node.js
 
-## Screenshots from live version
+## Live Version
 
-- **The project page**:
-![project_page](/public/project_page_screenshot.png)
-- **Example of AI-generated instructions**: 
-![open_oard](/public/card_modal.png)
+Check out the [live version](https://fxcircus.github.io/music-tools-studio) or view the [source code](https://github.com/fxcircus/music-tools-studio) on GitHub.
 
+## Screenshots
 
-## Wireframes
+![Music Tools Studio](build/app_screenshot_dark_2025.png)
 
-- **Main Wireframe**:
-  ![main_wireframe](/public/wireframe_main.png)
-- **Project Page Wireframe**:
-  ![project_page_w_ireframe](/public/wireframe_project_page.png)
+## Installation
+
+```
+git clone https://github.com/fxcircus/music-tools-studio.git
+cd music-tools-studio
+npm install
+npm start
+```
+
+The app will run in development mode at [http://localhost:3000](http://localhost:3000).
