@@ -6,7 +6,7 @@ import PomodoroTimer from "../../components/pomodoroTimer/pomodoroTimer";
 import InspirationGenerator from "../../components/inspirationGenerator/inspirationGenerator";
 import NotePad from "../../components/Notepad/Notepad";
 import Metronome from "../../components/Metronome/Metronome";
-import { MusicToolsState } from "../../utils/types";
+import { TilesState } from "../../utils/types";
 import { loadAppState, saveAppState } from "../../utils/storageService";
 
 interface LoaderProps {
@@ -57,11 +57,11 @@ const GridItem = styled(motion.div)<{ $order?: number }>`
 `;
 
 const CurrentProject: FC<LoaderProps> = () => {
-    const [state, setState] = useState<MusicToolsState>(loadAppState());
+    const [state, setState] = useState<TilesState>(loadAppState());
     const [animate, setAnimate] = useState(false);
 
     // Update state and save to localStorage whenever a component of state changes
-    const updateState = (newState: Partial<MusicToolsState>) => {
+    const updateState = (newState: Partial<TilesState>) => {
         setState(prevState => {
             const updatedState = { ...prevState, ...newState };
             saveAppState(updatedState);

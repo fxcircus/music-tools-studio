@@ -127,14 +127,17 @@ const AboutPage = () => {
           <CardIconWrapper>
             <Icon icon={FaInfoCircle} size={20} />
           </CardIconWrapper>
-          <CardTitle>About Music Tools</CardTitle>
+          <CardTitle>About Tiles</CardTitle>
         </CardHeader>
         
         <LogoContainer>
-          <Logo src={process.env.PUBLIC_URL + '/logo_2025.png'} alt="Music Tools Logo" />
+          <Logo src={process.env.PUBLIC_URL + '/logo_2025.png'} alt="Tiles Logo" />
         </LogoContainer>
         
         <Section>
+          <Paragraph style={{ textAlign: 'center', fontSize: '1.1em', fontWeight: '500' }}>
+            Tiles — Tools for Creative Flow
+          </Paragraph>
           <Paragraph>
           A simple set of tools to help musicians stay creative and focused. 
           </Paragraph>
@@ -157,7 +160,7 @@ const AboutPage = () => {
             <ListItem>
               <Strong>🎲 Inspiration Generator:</Strong>
               <NestedList>
-                <ListItem>Get instant musical ideas with random root notes, scales, BPM, and instrument suggestions. Lock in what you like and shuffle the rest.</ListItem>
+                <ListItem>Randomize scales, BPM, and sounds. Lock in what you like and shuffle the rest.</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
@@ -169,7 +172,7 @@ const AboutPage = () => {
             <ListItem>
               <Strong>📝 Notes:</Strong>
               <NestedList>
-                <ListItem>Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.</ListItem>
+                <ListItem>Capture lyrics, chord progressions, FX pedal settings, etc'...</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
@@ -181,7 +184,7 @@ const AboutPage = () => {
             <ListItem>
               <Strong>🌓 Dark / Light Modes:</Strong>
               <NestedList>
-                <ListItem>Because of course there's a dark mode.</ListItem>
+                <ListItem>Yes.</ListItem>
               </NestedList>
             </ListItem>
           </List>

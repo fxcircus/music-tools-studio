@@ -104,10 +104,10 @@ const ValueCell = styled.td`
   text-align: right;
 `;
 
-const LockIconWrapper = styled.div<{ isLocked: boolean }>`
+const LockIconWrapper = styled.div<{ $isLocked: boolean }>`
   cursor: pointer;
-  color: ${({ isLocked, theme }) => 
-    isLocked ? theme.colors.lockIconActive : theme.colors.lockIconInactive};
+  color: ${({ $isLocked, theme }) => 
+    $isLocked ? theme.colors.lockIconActive : theme.colors.lockIconInactive};
   transition: all ${({ theme }) => theme.transitions.fast};
   
   &:hover {
@@ -160,27 +160,27 @@ export default function InspirationGenerator({
 
   // Update localStorage whenever values change
   useEffect(() => {
-    localStorage.setItem('musicToolsRootEl', rootEl);
+    localStorage.setItem('tilesRootEl', rootEl);
   }, [rootEl]);
 
   useEffect(() => {
-    localStorage.setItem('musicToolsScaleEl', scaleEl);
+    localStorage.setItem('tilesScaleEl', scaleEl);
   }, [scaleEl]);
 
   useEffect(() => {
-    localStorage.setItem('musicToolsTonesEl', tonesEl);
+    localStorage.setItem('tilesTonesEl', tonesEl);
   }, [tonesEl]);
 
   useEffect(() => {
-    localStorage.setItem('musicToolsTonesArrEl', JSON.stringify(tonesArrEl));
+    localStorage.setItem('tilesTonesArrEl', JSON.stringify(tonesArrEl));
   }, [tonesArrEl]);
 
   useEffect(() => {
-    localStorage.setItem('musicToolsBpmEl', bpmEl);
+    localStorage.setItem('tilesBpmEl', bpmEl);
   }, [bpmEl]);
 
   useEffect(() => {
-    localStorage.setItem('musicToolsSoundEl', soundEl);
+    localStorage.setItem('tilesSoundEl', soundEl);
   }, [soundEl]);
 
   // 12 chromatic notes (using Unicode ♯)
@@ -257,7 +257,7 @@ export default function InspirationGenerator({
     const tonesArr = generateScaleTonesMemoized(rootEl, scaleEl);
     setComputedScaleNotes(tonesArr.join(" - "));
     setTonesArrEl(tonesArr);
-  }, [rootEl, scaleEl, setTonesArrEl, generateScaleTonesMemoized]);
+  }, [rootEl, scaleEl, generateScaleTonesMemoized]);
 
   const maxBpm = 140;
   const minBpm = 75;
@@ -338,7 +338,7 @@ export default function InspirationGenerator({
           <TableRow>
             <TableHeader>
               <LockIconWrapper 
-                isLocked={locked.root} 
+                $isLocked={locked.root} 
                 onClick={() => toggleLock("root")}
               >
                 <IconWrapper>
@@ -353,7 +353,7 @@ export default function InspirationGenerator({
           <TableRow>
             <TableHeader>
               <LockIconWrapper 
-                isLocked={locked.scale} 
+                $isLocked={locked.scale} 
                 onClick={() => toggleLock("scale")}
               >
                 <IconWrapper>
@@ -380,7 +380,7 @@ export default function InspirationGenerator({
 
           <TableRow>
             <TableHeader>
-              <LockIconWrapper isLocked={locked.bpm} onClick={() => toggleLock("bpm")}>
+              <LockIconWrapper $isLocked={locked.bpm} onClick={() => toggleLock("bpm")}>
                 <IconWrapper>
                   {locked.bpm ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
                 </IconWrapper>
@@ -392,7 +392,7 @@ export default function InspirationGenerator({
 
           <TableRow>
             <TableHeader>
-              <LockIconWrapper isLocked={locked.sound} onClick={() => toggleLock("sound")}>
+              <LockIconWrapper $isLocked={locked.sound} onClick={() => toggleLock("sound")}>
                 <IconWrapper>
                   {locked.sound ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
                 </IconWrapper>

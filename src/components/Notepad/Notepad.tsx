@@ -42,7 +42,7 @@ export default function Notes({ notes, setNotes }: NotesProps) {
     if (notes) {
       setText({ newText: notes });
     } else {
-      const savedNotes = localStorage.getItem('musicToolsNotes');
+      const savedNotes = localStorage.getItem('tilesNotes');
       if (savedNotes) {
         setText({ newText: savedNotes });
         setNotes(savedNotes);
@@ -56,7 +56,7 @@ export default function Notes({ notes, setNotes }: NotesProps) {
     setNotes(newValue);
     
     // Save to localStorage
-    localStorage.setItem('musicToolsNotes', newValue);
+    localStorage.setItem('tilesNotes', newValue);
   };
 
   return (

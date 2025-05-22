@@ -5,7 +5,7 @@ export interface Project {
   userId: string;
 }
 
-export interface MusicToolsState {
+export interface TilesState {
   notes: string;
   rootEl: string;
   scaleEl: string;

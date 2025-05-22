@@ -7,6 +7,11 @@ import { FaSun, FaMoon, FaFileImport, FaFileExport, FaTimes } from 'react-icons/
 import { Icon } from '../../utils/IconHelper';
 
 interface Project {
+  id: string;
+  date: string;
+  app?: string;
+  appVersion?: string;
+  appURL?: string;
   notes: string;
   rootEl: string;
   scaleEl: string;
@@ -55,24 +60,32 @@ const NavItems = styled.ul`
   padding: 0;
 `;
 
-const NavItem = styled(motion.li)<{ active?: boolean }>`
+const NavItem = styled(motion.li)`
   position: relative;
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   font-weight: 600;
   transition: all ${({ theme }) => theme.transitions.fast};
-  color: ${({ active, theme }) => active ? theme.colors.primary : theme.colors.text};
+  color: ${({ theme }) => theme.colors.text};
+
+  &.active {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 
   &::after {
     content: '';
     position: absolute;
     bottom: -2px;
     left: 0;
-    width: ${({ active }) => active ? '100%' : '0'};
+    width: 0;
     height: 2px;
     background: ${({ theme }) => theme.colors.accentGradient};
     transition: width ${({ theme }) => theme.transitions.normal};
+  }
+
+  &.active::after {
+    width: 100%;
   }
 
   &:hover {
@@ -237,28 +250,38 @@ const Nav: FC = () => {
 
   const exportProject = () => {
     // Try to get values from localStorage if they exist
-    let notes = localStorage.getItem('musicToolsNotes') || '';
-    let rootEl = localStorage.getItem('musicToolsRootEl') || 'C';
-    let scaleEl = localStorage.getItem('musicToolsScaleEl') || 'Major';
-    let tonesEl = localStorage.getItem('musicToolsTonesEl') || 'T - T - S - T - T - T - S';
+    let notes = localStorage.getItem('tilesNotes') || '';
+    let rootEl = localStorage.getItem('tilesRootEl') || 'C';
+    let scaleEl = localStorage.getItem('tilesScaleEl') || 'Major';
+    let tonesEl = localStorage.getItem('tilesTonesEl') || 'T - T - S - T - T - T - S';
     
     // Parse tonesArrEl from localStorage or use default
     let tonesArrEl;
     try {
-      const savedTonesArrEl = localStorage.getItem('musicToolsTonesArrEl');
+      const savedTonesArrEl = localStorage.getItem('tilesTonesArrEl');
       tonesArrEl = savedTonesArrEl ? JSON.parse(savedTonesArrEl) : ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
     } catch (error) {
       console.error("Error parsing tonesArrEl:", error);
       tonesArrEl = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
     }
     
-    let bpmEl = localStorage.getItem('musicToolsBpmEl') || '100';
-    let soundEl = localStorage.getItem('musicToolsSoundEl') || 'Guitar';
+    let bpmEl = localStorage.getItem('tilesBpmEl') || '100';
+    let soundEl = localStorage.getItem('tilesSoundEl') || 'Guitar';
     
-    // Create project data object
+    // Format date for the filename
+    const dateString = new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric'
+    }).replace(/,/g, '');
+    
+    // Create project data object with app metadata
     const currentProject = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
+      app: "Tiles",
+      appVersion: "1.0.0",
+      appURL: "https://fxcircus.github.io/music-tools-studio",
       notes,
       rootEl,
       scaleEl,
@@ -278,7 +301,7 @@ const Nav: FC = () => {
     // Create temporary link element and trigger download
     const link = document.createElement('a');
     link.href = url;
-    link.download = `music-project-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `Music-Project-${dateString}.json`;
     document.body.appendChild(link);
     link.click();
     
@@ -337,25 +360,36 @@ const Nav: FC = () => {
         if (typeof result === 'string') {
           const jsonData = JSON.parse(result) as Project;
           
+          // Verify it's a valid project file
+          if (!jsonData.rootEl || !jsonData.scaleEl) {
+            throw new Error("This doesn't appear to be a valid Tiles project file.");
+          }
+          
           // Save all project data to localStorage
-          localStorage.setItem('musicToolsNotes', jsonData.notes || '');
-          localStorage.setItem('musicToolsRootEl', jsonData.rootEl || 'C');
-          localStorage.setItem('musicToolsScaleEl', jsonData.scaleEl || 'Major');
-          localStorage.setItem('musicToolsTonesEl', jsonData.tonesEl || 'T - T - S - T - T - T - S');
-          localStorage.setItem('musicToolsTonesArrEl', JSON.stringify(jsonData.tonesArrEl || ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C']));
-          localStorage.setItem('musicToolsBpmEl', jsonData.bpmEl || '100');
-          localStorage.setItem('musicToolsSoundEl', jsonData.soundEl || 'Guitar');
+          localStorage.setItem('tilesNotes', jsonData.notes || '');
+          localStorage.setItem('tilesRootEl', jsonData.rootEl || 'C');
+          localStorage.setItem('tilesScaleEl', jsonData.scaleEl || 'Major');
+          localStorage.setItem('tilesTonesEl', jsonData.tonesEl || 'T - T - S - T - T - T - S');
+          localStorage.setItem('tilesTonesArrEl', JSON.stringify(jsonData.tonesArrEl || ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C']));
+          localStorage.setItem('tilesBpmEl', jsonData.bpmEl || '100');
+          localStorage.setItem('tilesSoundEl', jsonData.soundEl || 'Guitar');
           
           // Close the modal
           setShowImportModal(false);
+          
+          // Provide feedback
+          alert(`Project imported successfully!\nRoot: ${jsonData.rootEl} ${jsonData.scaleEl}\nBPM: ${jsonData.bpmEl}`);
           
           // Force page reload to ensure everything is updated
           window.location.reload();
         }
       } catch (error) {
         console.error("Error parsing JSON:", error);
-        alert("Invalid JSON file. Please try again.");
+        alert(`Error importing project: ${error instanceof Error ? error.message : "Invalid file format"}. Please try again.`);
       }
+    };
+    reader.onerror = () => {
+      alert("Error reading file. Please try again.");
     };
     reader.readAsText(file);
   };
@@ -380,7 +414,7 @@ const Nav: FC = () => {
           >
             🎵
           </motion.span>
-          Music Tools
+          Tiles
         </NavBrand>
         
         <motion.div
@@ -390,14 +424,14 @@ const Nav: FC = () => {
         >
           <NavItems>
             <NavItem 
-              active={window.location.pathname === '/' || window.location.pathname === '/music-tools-studio/'} 
+              className={window.location.pathname === '/' || window.location.pathname === '/music-tools-studio/' ? 'active' : ''}
               whileHover={{ scale: 1.05 }} 
               onClick={() => navigate('/')}
             >
               Project
             </NavItem>
             <NavItem 
-              active={window.location.pathname.includes('/about')}
+              className={window.location.pathname.includes('/about') ? 'active' : ''}
               whileHover={{ scale: 1.05 }} 
               onClick={() => navigate('/about')}
             >

@@ -1,6 +1,6 @@
-import { MusicToolsState } from './types';
+import { TilesState } from './types';
 
-const PREFIX = 'musicTools';
+const PREFIX = 'tiles';
 
 /**
  * Storage keys used in the application
@@ -19,7 +19,7 @@ export const STORAGE_KEYS = {
 /**
  * Default values for application state
  */
-export const DEFAULT_STATE: MusicToolsState = {
+export const DEFAULT_STATE: TilesState = {
   notes: '',
   rootEl: 'C',
   scaleEl: 'Major',
@@ -75,7 +75,7 @@ export const getFromStorage = <T>(key: string, defaultValue: T): T => {
 /**
  * Loads the entire application state from localStorage
  */
-export const loadAppState = (): MusicToolsState => {
+export const loadAppState = (): TilesState => {
   return {
     notes: getFromStorage(STORAGE_KEYS.NOTES, DEFAULT_STATE.notes),
     rootEl: getFromStorage(STORAGE_KEYS.ROOT_EL, DEFAULT_STATE.rootEl),
@@ -90,7 +90,7 @@ export const loadAppState = (): MusicToolsState => {
 /**
  * Saves the entire application state to localStorage
  */
-export const saveAppState = (state: MusicToolsState): void => {
+export const saveAppState = (state: TilesState): void => {
   saveToStorage(STORAGE_KEYS.NOTES, state.notes);
   saveToStorage(STORAGE_KEYS.ROOT_EL, state.rootEl);
   saveToStorage(STORAGE_KEYS.SCALE_EL, state.scaleEl);

@@ -30,7 +30,7 @@ Check out the [live version](https://fxcircus.github.io/music-tools-studio) or v
 
 ## Screenshots
 
-![Tiles](public/project_page_screenshot.png)
+![Tiles](public/tiles_app_screenshot_dark_2025.png)
 
 ## Installation
 

@@ -272,12 +272,12 @@ export const ControlButton = styled(IconButton)`
 
 // LockIcon
 interface LockIconProps {
-  isLocked: boolean;
+  $isLocked: boolean;
 }
 
 export const LockIcon = styled.i<LockIconProps>`
-  color: ${({ isLocked, theme }) => 
-    isLocked 
+  color: ${({ $isLocked, theme }) => 
+    $isLocked 
       ? theme.colors.lockIconActive 
       : theme.colors.lockIconInactive
   };
