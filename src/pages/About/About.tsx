@@ -172,6 +172,12 @@ const AboutPage = () => {
                 <ListItem>Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.</ListItem>
               </NestedList>
             </ListItem>
+            <ListItem>
+              <Strong>💾 Save Your Work:</Strong>
+              <NestedList>
+                <ListItem>Save or load your project as a JSON file to pick up where you left off or share with others.</ListItem>
+              </NestedList>
+            </ListItem>
           </List>
         </Section>
         

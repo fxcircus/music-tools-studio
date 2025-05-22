@@ -12,6 +12,8 @@ A simple set of tools to help musicians stay creative and focused.
 
 - **Notes**: Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.
 
+- **Save Your Work**: Export your project settings and notes to continue later or share with collaborators. Import previously saved projects with a single click.
+
 ## Technologies Used
 
 - React + TypeScript
