@@ -262,13 +262,8 @@ export default function InspirationGenerator({
   const maxBpm = 140;
   const minBpm = 75;
 
-  const sounds = [
-    "Guitar", "Bass", "Percussion", "Pad", "Synth", "Arp",
-    "Acoustic", "Box", "Coin on strings", "FX", "Lead",
-    "Fuzz", "Harmonics", "Ebox", "Freeze pedal", "Lap Steel",
-    "Piano", "Violin", "Cello", "Banjo", "Whistle",
-    "Birdsong", "Helicopter rotor", "Siren", "Space shuttle", "Alarm clock",
-  ];
+  
+  const sounds = ["Electric Guitar", "Deep Bass", "Percussion", "Arp", "Acoustic Strums", "Coin-on-Strings", "Lead", "Fuzzy", "Glass Harmonics", "E-Bow Drones", "Frozen Reverb", "Slide Guitar", "Cinematic Piano", "Bow", "Banjo", "Whistling Melody"];
 
   const getRandomIndex = (n: number) => Math.floor(Math.random() * n);
 
