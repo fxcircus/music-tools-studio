@@ -1,16 +1,35 @@
 import React, { FC, useState, useEffect } from "react";
-import './CurrentProject.css'
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { Container } from '../../components/common/StyledComponents';
 import PomodoroTimer from "../../components/pomodoroTimer/pomodoroTimer";
-import Divider from "../../components/Divider/Divider";
-import InspirationGenerator from "../../components/inspirationGenerator/inspirationGenerator"
-import NotePad from "../../components/Notepad/Notepad"
+import InspirationGenerator from "../../components/inspirationGenerator/inspirationGenerator";
+import NotePad from "../../components/Notepad/Notepad";
+import Metronome from "../../components/Metronome/Metronome";
 
 interface LoaderProps {
-    result: string;
+    result?: string;
 }
 
-const CurrentProject: FC<LoaderProps> = ({ result: passedResult }) => {
-    const [result, setResult] = useState(passedResult || "");
+const PageContainer = styled(Container)`
+  padding-bottom: ${({ theme }) => theme.spacing.xxl};
+`;
+
+const TwoColumnGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${({ theme }) => theme.spacing.md};
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const GridItem = styled(motion.div)`
+  height: 100%;
+`;
+
+const CurrentProject: FC<LoaderProps> = () => {
     const [notes, setNotes] = useState<string>('');
     const [animate, setAnimate] = useState(false);
     const [rootEl, setRootEl] = useState("C");
@@ -62,22 +81,54 @@ const CurrentProject: FC<LoaderProps> = ({ result: passedResult }) => {
         }
     }, []);
 
+    // Component variants for animations
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
+    
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
+
     return (
-        <div className="current-project">
-            <PomodoroTimer />
-            <Divider />
-            <InspirationGenerator 
-                animate={animate}   setAnimate={setAnimate}
-                rootEl={rootEl}     setRootEl={setRootEl}
-                scaleEl={scaleEl}   setScaleEl={setScaleEl}
-                tonesEl={tonesEl}   setTonesEl={setTonesEl}
-                tonesArrEl={tonesArrEl} setTonesArrEl={setTonesArrEl}
-                bpmEl={bpmEl}       setBpmEl={setBpmEl}
-                soundEl={soundEl}   setSoundEl={setSoundEl}
-            />
-            <Divider />
-            <NotePad notes={notes} setNotes={setNotes} />
-        </div>
+        <PageContainer as={motion.div} 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            <TwoColumnGrid>
+                <GridItem variants={itemVariants}>
+                    <PomodoroTimer />
+                </GridItem>
+                
+                <GridItem variants={itemVariants}>
+                    <InspirationGenerator 
+                        animate={animate}   setAnimate={setAnimate}
+                        rootEl={rootEl}     setRootEl={setRootEl}
+                        scaleEl={scaleEl}   setScaleEl={setScaleEl}
+                        tonesEl={tonesEl}   setTonesEl={setTonesEl}
+                        tonesArrEl={tonesArrEl} setTonesArrEl={setTonesArrEl}
+                        bpmEl={bpmEl}       setBpmEl={setBpmEl}
+                        soundEl={soundEl}   setSoundEl={setSoundEl}
+                    />
+                </GridItem>
+                
+                <GridItem variants={itemVariants}>
+                    <NotePad notes={notes} setNotes={setNotes} />
+                </GridItem>
+                
+                <GridItem variants={itemVariants}>
+                    <Metronome bpm={parseInt(bpmEl, 10)} />
+                </GridItem>
+            </TwoColumnGrid>
+        </PageContainer>
     );
 }
 

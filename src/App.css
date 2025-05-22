@@ -1,6 +1,6 @@
 :root {
   --black-color: #0D0630;
-  --background-color: #65D46E;
+  --background-color: transparent;
   --white-color: #f1f1f5;
 }
 
@@ -9,7 +9,7 @@ body, html {
   padding: 0;
   font-family: 'Helvetica';
   font-weight: bold;
-  background-color: var(--background-color);
+  background-color: transparent;
 }
 
 .App {

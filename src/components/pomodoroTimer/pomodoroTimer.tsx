@@ -1,10 +1,76 @@
-import React, { useState, useEffect } from "react";
-import './pomodoroTimer.css'
+import React, { useState, useEffect, useRef } from "react";
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaUndo, FaPlay, FaPause, FaCoffee } from 'react-icons/fa';
+import { Card, Title } from '../common/StyledComponents';
+import { Icon } from '../../utils/IconHelper';
+
+// Styled components
+const TimerCard = styled(Card)`
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xl};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const TimerDisplay = styled(motion.div)`
+  background-color: ${({ theme }) => theme.colors.timerBackground};
+  border: 4px solid ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.round};
+  box-shadow: ${({ theme }) => theme.shadows.medium};
+  color: ${({ theme }) => theme.colors.text};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${({ theme }) => theme.fontSizes.timer};
+  font-weight: 700;
+  height: 180px;
+  width: 180px;
+  margin: 0 auto;
+  transition: all ${({ theme }) => theme.transitions.normal};
+`;
+
+const TimerControls = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  justify-content: center;
+  margin-top: ${({ theme }) => theme.spacing.lg};
+`;
+
+const TimerButton = styled(motion.button)`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${({ theme }) => theme.fontSizes.xxl};
+  padding: ${({ theme }) => theme.spacing.sm};
+  transition: all ${({ theme }) => theme.transitions.fast};
+  
+  &:hover {
+    color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
+const PlayPauseButton = styled(TimerButton)`
+  font-size: ${({ theme }) => theme.fontSizes.xxxl};
+`;
+
+const IconWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export default function PomodoroTimer() {
   const [time, setTime] = useState(1500);
   const [isCounting, setIsCounting] = useState(false);
-  let intervalId: NodeJS.Timeout | undefined;
+  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
   const secondsToMinutes = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -31,50 +97,71 @@ export default function PomodoroTimer() {
 
   useEffect(() => {
     if (isCounting) {
-      intervalId = setInterval(() => {
+      intervalIdRef.current = setInterval(() => {
         if (time <= 0) {
-          clearInterval(intervalId!);
+          if (intervalIdRef.current) {
+            clearInterval(intervalIdRef.current);
+          }
           setIsCounting(false);
         } else {
           setTime(prevTime => prevTime - 1);
         }
       }, 1000);
-    } else if (intervalId) {
-      clearInterval(intervalId);
+    } else if (intervalIdRef.current) {
+      clearInterval(intervalIdRef.current);
     }
 
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
+      if (intervalIdRef.current) {
+        clearInterval(intervalIdRef.current);
       }
     };
   }, [isCounting, time]);
 
   return (
-    <div className="pomodoro-timer-class">
+    <TimerCard 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Title>Focus Timer</Title>
+      
+      <TimerDisplay
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.05, boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)' }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        {secondsToMinutes(time)}
+      </TimerDisplay>
 
-      <div className="pomodoro-clock">{secondsToMinutes(time)}</div>
+      <TimerControls>
+        <TimerButton 
+          whileHover={{ scale: 1.2 }} 
+          whileTap={{ scale: 0.9 }}
+          onClick={() => resetTimer(1500)}
+        >
+          <IconWrapper><Icon icon={FaUndo} size={20} /></IconWrapper>
+        </TimerButton>
 
-      <div className="pomodoro-button-area">
-        
-        <button className="pomodoro-backward-button" onClick={() => resetTimer(1500)} >
-          <i className="fas fa-undo"></i>
-        </button>
+        <PlayPauseButton 
+          whileHover={{ scale: 1.2 }} 
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleCountdown}
+        >
+          <IconWrapper>
+            {isCounting ? <Icon icon={FaPause} size={24} /> : <Icon icon={FaPlay} size={24} />}
+          </IconWrapper>
+        </PlayPauseButton>
 
-        <button className="pomodoro-play-pause-area" onClick={toggleCountdown}>
-          {isCounting ? (
-            <i className="pomodoro-play-pause-button fas fa-pause-circle pause-circle-icon"></i>
-          ) : (
-            <i className="pomodoro-play-pause-button fas fa-play-circle play-icon"></i>
-          )}
-        </button>
-
-        <button className="pomodoro-break-button" onClick={takeBreak}>
-          <i className="fas fa-coffee coffee-icon"></i>
-        </button>
-        
-      </div>
-
-    </div>
-  )
+        <TimerButton 
+          whileHover={{ scale: 1.2 }} 
+          whileTap={{ scale: 0.9 }}
+          onClick={takeBreak}
+        >
+          <IconWrapper><Icon icon={FaCoffee} size={20} /></IconWrapper>
+        </TimerButton>
+      </TimerControls>
+    </TimerCard>
+  );
 }
