@@ -1,3 +1,5 @@
+// src/components/Generator/Generator.tsx
+
 import React, { useState } from "react";
 import "./inspirationGenerator.css";
 import Metronome from "../Metronome/Metronome";
@@ -45,114 +47,128 @@ export default function InspirationGenerator({
     sound: false,
   });
 
-  // Global Vars and arrays:
-  const maxBpm = 140;
-  const minBpm = 75;
-  let scaleIdx = 0;
-  const roots = [ "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" ];
-  const sounds = [
-    "Guitar",
-    "Bass",
-    "Percussion",
-    "Pad",
-    "Synth",
-    "Arp",
-    "Accoustic",
-    "Box",
-    "Coin on strings",
-    "FX",
-    "Lead",
-    "Fuzz",
-    "Harmonics",
-    "Ebox",
-    "Freeze pedal",
-    "Lap Steel",
-    "Piano",
-    "Violin",
-    "Cello",
-    "Banjo",
-    "Whistle",
-    "Birdsong",
-    "Helicopter rotor",
-    "Siren",
-    "Space shuttle",
-    "Alarm clock",
+  // 12 chromatic notes (using Unicode ♯)
+  const notes = [
+    "C", "C♯", "D", "D♯", "E", "F",
+    "F♯", "G", "G♯", "A", "A♯", "B",
   ];
+  const roots = notes;
+
   const scales = [
     "Major",
     "Minor",
-    "Dorial",
+    "Dorian",
     "Phrygian",
     "Lydian",
     "Mixolydian",
     "Locrian",
   ];
-  const scaleTones = [
-    "T - T - S - T - T - T - S",
-    "T - S - T - T - S - T - T",
-    "T - S - T - T - T - S - T",
-    "S - T - T - T - S - T - T",
-    "T - T - S - T - S - T - T",
-    "T - T - S - T - T - S - T",
-    "S - T - T - S - T - T - T",
+
+  // your original pattern text for the "Tones" row
+  const scalePatterns: Record<string, string> = {
+    Major:      "T - T - S - T - T - T - S",
+    Minor:      "T - S - T - T - S - T - T",
+    Dorian:     "T - S - T - T - T - S - T",
+    Phrygian:   "S - T - T - T - S - T - T",
+    Lydian:     "T - T - S - T - S - T - T",
+    Mixolydian: "T - T - S - T - T - S - T",
+    Locrian:    "S - T - T - S - T - T - T",
+  };
+
+  // semitone steps for computing actual notes
+  const scaleIntervals: Record<string, number[]> = {
+    Major:      [2, 2, 1, 2, 2, 2, 1],
+    Minor:      [2, 1, 2, 2, 1, 2, 2],
+    Dorian:     [2, 1, 2, 2, 2, 1, 2],
+    Phrygian:   [1, 2, 2, 2, 1, 2, 2],
+    Lydian:     [2, 2, 2, 1, 2, 2, 1],
+    Mixolydian: [2, 2, 1, 2, 2, 1, 2],
+    Locrian:    [1, 2, 2, 1, 2, 2, 2],
+  };
+
+  // helper: walk the chromatic circle and return 8 notes (incl. octave)
+  function generateScaleTones(root: string, mode: string): string[] {
+    const intervals = scaleIntervals[mode];
+    let idx = notes.indexOf(root);
+    const result = [root];
+    for (let step of intervals) {
+      idx = (idx + step) % notes.length;
+      result.push(notes[idx]);
+    }
+    return result;
+  }
+
+  // initialize to C Major
+  const initialScaleTones = generateScaleTones("C", "Major").join(" - ");
+  const [computedScaleNotes, setComputedScaleNotes] = useState<string>(
+    initialScaleTones
+  );
+
+  const maxBpm = 140;
+  const minBpm = 75;
+
+  const sounds = [
+    "Guitar", "Bass", "Percussion", "Pad", "Synth", "Arp",
+    "Accoustic", "Box", "Coin on strings", "FX", "Lead",
+    "Fuzz", "Harmonics", "Ebox", "Freeze pedal", "Lap Steel",
+    "Piano", "Violin", "Cello", "Banjo", "Whistle",
+    "Birdsong", "Helicopter rotor", "Siren", "Space shuttle", "Alarm clock",
   ];
 
-  // Random Index Generator Function:
-  const getIndex = (num: number) => {
-    let result = Math.floor(Math.random() * num);
-    scaleIdx = result;
-    return result;
-  };
+  const getRandomIndex = (n: number) => Math.floor(Math.random() * n);
 
   const rollDice = () => {
     setAnimate(false);
-    if (!locked.root) {
-      setRootEl(roots[getIndex(roots.length)]);
-    }
-    if (!locked.sound) {
-      setSoundEl(sounds[getIndex(sounds.length)]);
-    }
+
+    // ROOT
+    const newRoot = locked.root
+      ? rootEl
+      : roots[getRandomIndex(roots.length)];
+    if (!locked.root) setRootEl(newRoot);
+
+    // SCALE + original pattern
+    const newScale = locked.scaleAndTones
+      ? scaleEl
+      : scales[getRandomIndex(scales.length)];
     if (!locked.scaleAndTones) {
-      setScaleEl(scales[getIndex(scales.length)]);
-      setTonesEl(scaleTones[scaleIdx]);
+      setScaleEl(newScale);
+      setTonesEl(scalePatterns[newScale]);
     }
+
+    // COMPUTED scale tones with dashes/spaces
+    const tonesArr = generateScaleTones(newRoot, newScale);
+    setComputedScaleNotes(tonesArr.join(" - "));
+
+    // SOUND
+    if (!locked.sound) {
+      setSoundEl(sounds[getRandomIndex(sounds.length)]);
+    }
+
+    // BPM
     if (!locked.bpm) {
-      let bpmVal: number = getIndex(maxBpm);
-      if (bpmVal > maxBpm) {
-        console.log(`High! ${bpmVal}`);
-        bpmVal = maxBpm;
-      } else if (bpmVal < minBpm) {
-        console.log(`Low! ${bpmVal}`);
-        bpmVal = minBpm;
-      }
+      let bpmVal = getRandomIndex(maxBpm + 1);
+      if (bpmVal < minBpm) bpmVal = minBpm;
       setBpmEl(bpmVal.toString());
     }
 
     setAnimate(true);
   };
 
-  type ParamName = keyof LockedState;
-
-  const toggleLock = (param: ParamName) => {
-    setLocked((prevState) => ({
-      ...prevState,
-      [param]: !prevState[param],
-    }));
-  };
+  const toggleLock = (param: keyof LockedState) =>
+    setLocked((s) => ({ ...s, [param]: !s[param] }));
 
   return (
     <div className="inspiration-generator">
       <p className="sub-title">
-        <b>
-          <u>Inspiration generator:</u>
-        </b>
-        <br />
+        <b><u>Inspiration generator:</u></b><br />
         Roll the dice to generate a random rule set
       </p>
 
       <i
         onClick={rollDice}
-        className={`dice fas fa-dice dice-icon ${animate ? "animate" : ""}`}
+        className={`dice fas fa-dice dice-icon ${
+          animate ? "animate" : ""
+        }`}
       />
 
       <table>
@@ -181,11 +197,21 @@ export default function InspirationGenerator({
             <td>Scale</td>
             <td className="td-value">{scaleEl}</td>
           </tr>
+
+          {/* original pattern */}
           <tr>
             <th />
             <td>Tones</td>
             <td className="td-value">{tonesEl}</td>
           </tr>
+
+          {/* new computed-note row */}
+          <tr>
+            <th />
+            <td>Scale Tones</td>
+            <td className="td-value">{computedScaleNotes}</td>
+          </tr>
+
           <tr>
             <th>
               <i
