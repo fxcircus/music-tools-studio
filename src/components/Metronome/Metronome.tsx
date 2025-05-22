@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState, useRef, useCallback } from "react";
-import * as Tone from 'tone';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FaVolumeMute, FaVolumeUp, FaPlay, FaPause, FaPlus, FaMinus, FaDrum } from 'react-icons/fa';
 import { Icon } from '../../utils/IconHelper';
 import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
@@ -163,89 +162,223 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
     const [bpm, setBpm] = useState(initialBpm);
     const [currentBeat, setCurrentBeat] = useState(0);
     const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+    const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const beats = [0, 1, 2, 3]; // 4/4 time signature
-    const synthRef = useRef<Tone.Synth | null>(null);
+    const prevBpmRef = useRef<number>(initialBpm);
+    const isRestartingRef = useRef<boolean>(false);
+    const externalBpmChangeRef = useRef<boolean>(false);
+    
+    // Web Audio API context
+    const audioContextRef = useRef<AudioContext | null>(null);
+    
+    // Initialize audio context on first user interaction
+    const initAudioContext = useCallback(() => {
+        if (!audioContextRef.current) {
+            try {
+                audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+            } catch (error) {
+                console.error("Failed to create AudioContext:", error);
+            }
+        } else if (audioContextRef.current.state === "suspended") {
+            audioContextRef.current.resume();
+        }
+    }, []);
 
-    // Create a memoized playSound function that doesn't change on re-renders
-    const playSound = useCallback((beatToPlay: number) => {
-        if (!synthRef.current) {
-            // Create synth if it doesn't exist
-            synthRef.current = new Tone.Synth({
-                oscillator: {
-                    type: 'triangle',
-                },
-                envelope: {
-                    attack: 0.005,
-                    decay: 0.1,
-                    sustain: 0,
-                    release: 0.1,
-                },
-            }).toDestination();
-            
-            // Adjust volume
-            synthRef.current.volume.value = -20;
+    // Cleanup audio context on unmount
+    useEffect(() => {
+        return () => {
+            clearAllTimers();
+            if (audioContextRef.current) {
+                audioContextRef.current.close();
+                audioContextRef.current = null;
+            }
+        };
+    }, []);
+
+    // Helper to clear all timers safely
+    const clearAllTimers = useCallback(() => {
+        if (intervalIdRef.current !== null) {
+            clearInterval(intervalIdRef.current);
+            intervalIdRef.current = null;
         }
         
-        // Play different notes for the first beat vs others
-        const now = Tone.now();
-        if (beatToPlay === 0) {
-            synthRef.current.triggerAttackRelease('C5', '16n', now);
-        } else {
-            synthRef.current.triggerAttackRelease('G4', '16n', now);
+        if (timeoutIdRef.current !== null) {
+            clearTimeout(timeoutIdRef.current);
+            timeoutIdRef.current = null;
+        }
+        
+        if (restartTimeoutRef.current !== null) {
+            clearTimeout(restartTimeoutRef.current);
+            restartTimeoutRef.current = null;
         }
     }, []);
 
-    // Cleanup the synth on unmount
-    useEffect(() => {
-        return () => {
-            if (synthRef.current) {
-                synthRef.current.dispose();
-                synthRef.current = null;
+    // Create and play click sound
+    const playClick = useCallback((isAccent: boolean) => {
+        if (muteSound || !audioContextRef.current) return;
+        
+        try {
+            // Create oscillator
+            const oscillator = audioContextRef.current.createOscillator();
+            const gainNode = audioContextRef.current.createGain();
+            
+            // Set properties based on whether this is an accented beat
+            if (isAccent) {
+                // Higher pitch for first beat
+                oscillator.frequency.value = 880; // A5
+                gainNode.gain.value = 0.5;
+            } else {
+                // Lower pitch for other beats
+                oscillator.frequency.value = 440; // A4
+                gainNode.gain.value = 0.3;
             }
-        };
-    }, []);
+            
+            // Connect and start
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContextRef.current.destination);
+            
+            // Quick envelope
+            const now = audioContextRef.current.currentTime;
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+            
+            // Start and stop
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+            
+            // Clean up
+            oscillator.onended = () => {
+                oscillator.disconnect();
+                gainNode.disconnect();
+            };
+        } catch (error) {
+            console.error("Error playing click:", error);
+        }
+    }, [muteSound]);
 
+    // Start the metronome interval with given BPM
+    const startMetronomeInterval = useCallback((targetBpm: number) => {
+        // Prevent multiple restarts
+        if (isRestartingRef.current) return;
+        isRestartingRef.current = true;
+        
+        // Ensure audio context is initialized
+        initAudioContext();
+        
+        // Clear any existing timers first
+        clearAllTimers();
+        
+        // Reset beat to 0
+        setCurrentBeat(0);
+        
+        // Calculate interval time based on BPM
+        const intervalTime = 60000 / targetBpm;
+        
+        // Add a longer delay if this was triggered by an external BPM change
+        const delayTime = externalBpmChangeRef.current ? 250 : 100;
+        
+        // Add a delay before starting
+        timeoutIdRef.current = setTimeout(() => {
+            // Play the first beat
+            playClick(true);
+            
+            // Set interval for subsequent beats
+            intervalIdRef.current = setInterval(() => {
+                setCurrentBeat(prev => {
+                    const nextBeat = (prev + 1) % beats.length;
+                    playClick(nextBeat === 0); // Accent on first beat
+                    return nextBeat;
+                });
+            }, intervalTime);
+            
+            // Reset flags
+            isRestartingRef.current = false;
+            externalBpmChangeRef.current = false;
+        }, delayTime);
+    }, [beats.length, clearAllTimers, initAudioContext, playClick]);
+
+    // Reset beat when BPM changes from outside (Inspiration Generator)
     useEffect(() => {
-        setBpm(initialBpm);
-    }, [initialBpm]);
+        if (initialBpm !== prevBpmRef.current) {
+            console.log(`BPM changed from ${prevBpmRef.current} to ${initialBpm}`);
+            setBpm(initialBpm);
+            
+            // If metronome is playing, handle the restart with a proper delay
+            if (metronomePlaying) {
+                // Flag that this was an external BPM change
+                externalBpmChangeRef.current = true;
+                
+                // Stop the metronome first
+                clearAllTimers();
+                setCurrentBeat(0);
+                
+                // Wait a moment before restarting to ensure clean break
+                restartTimeoutRef.current = setTimeout(() => {
+                    startMetronomeInterval(initialBpm);
+                }, 250);
+            } else {
+                // Just reset the beat if not playing
+                setCurrentBeat(0);
+            }
+            
+            prevBpmRef.current = initialBpm;
+        }
+    }, [initialBpm, metronomePlaying, startMetronomeInterval, clearAllTimers]);
 
+    // Handle starting and stopping the metronome
     useEffect(() => {
         if (metronomePlaying) {
-            // Initialize Tone.js context
-            if (Tone.context.state !== 'running') {
-                Tone.context.resume();
+            // Don't start if we're waiting for a BPM change restart
+            if (restartTimeoutRef.current === null) {
+                // Initialize audio context and start metronome
+                initAudioContext();
+                startMetronomeInterval(bpm);
             }
-            
-            const intervalTime = 60000 / bpm; // Calculate interval time based on BPM
-            
-            // Clear previous interval if exists
-            if (intervalIdRef.current !== null) {
-                clearInterval(intervalIdRef.current);
-            }
-            
-            intervalIdRef.current = setInterval(() => {
-                if (!muteSound) {
-                    playSound(currentBeat);
-                }
-                setCurrentBeat((prev) => (prev + 1) % beats.length);
-            }, intervalTime);
-        } else if (intervalIdRef.current !== null) {
-            clearInterval(intervalIdRef.current);
+        } else {
+            // Stop and reset when metronome is turned off
+            clearAllTimers();
+            setCurrentBeat(0);
         }
 
-        return () => {
-            if (intervalIdRef.current !== null) {
-                clearInterval(intervalIdRef.current);
-            }
-        };
-    }, [metronomePlaying, bpm, muteSound, beats.length, playSound, currentBeat]);
+        // Clean up on unmount or when dependencies change
+        return clearAllTimers;
+    }, [metronomePlaying, bpm, clearAllTimers, startMetronomeInterval, initAudioContext]);
 
     const handleIncreaseBpm = () => {
-        setBpm((prev: number) => Math.min(prev + 1, 300));
+        initAudioContext(); // Ensure audio context is initialized on user interaction
+        setBpm((prev: number) => {
+            const newBpm = Math.min(prev + 1, 300);
+            // Restart metronome if it's playing and BPM changed
+            if (newBpm !== prev && metronomePlaying) {
+                startMetronomeInterval(newBpm);
+            }
+            return newBpm;
+        });
     };
 
     const handleDecreaseBpm = () => {
-        setBpm((prev: number) => Math.max(prev - 1, 40));
+        initAudioContext(); // Ensure audio context is initialized on user interaction
+        setBpm((prev: number) => {
+            const newBpm = Math.max(prev - 1, 40);
+            // Restart metronome if it's playing and BPM changed
+            if (newBpm !== prev && metronomePlaying) {
+                startMetronomeInterval(newBpm);
+            }
+            return newBpm;
+        });
+    };
+
+    const toggleMetronome = () => {
+        // Initialize audio context on user interaction
+        initAudioContext();
+        setMetronomePlaying(prev => !prev);
+    };
+
+    const toggleMute = () => {
+        initAudioContext(); // Ensure audio context is initialized on user interaction
+        setMuteSound(prev => !prev);
     };
 
     return (
@@ -304,7 +437,7 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
             
             <ControlsRow>
                 <PlayPauseButton 
-                    onClick={() => setMetronomePlaying(!metronomePlaying)}
+                    onClick={toggleMetronome}
                     whileHover={{ scale: 1.1 }} 
                     whileTap={{ scale: 0.9 }}
                 >
@@ -314,7 +447,7 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
                 </PlayPauseButton>
                 
                 <ControlButton 
-                    onClick={() => setMuteSound(!muteSound)}
+                    onClick={toggleMute}
                     whileHover={{ scale: 1.2 }} 
                     whileTap={{ scale: 0.9 }}
                 >

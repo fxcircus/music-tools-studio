@@ -76,7 +76,7 @@ export default function Notes({ notes, setNotes }: NotesProps) {
         name="newText"
         onChange={handleChange}
         value={text.newText}
-        placeholder="Write your musical ideas and notes here..."
+        placeholder="Capture your musical ideas and notes here: lyrics, chord progressions, effect pedal settings, and more..."
       />
     </NotesCard>
   );
