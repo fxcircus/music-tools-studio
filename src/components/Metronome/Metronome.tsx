@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaVolumeMute, FaVolumeUp, FaPlay, FaPause, FaPlus, FaMinus, FaDrum, FaBug } from 'react-icons/fa';
 import { Icon } from '../../utils/IconHelper';
 import ToolCard from '../common/ToolCard';
+import config from '../../config';
 
 interface LoaderProps {
     bpm: number;
@@ -552,9 +553,11 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
 
     return (
         <ToolCard title="Metronome" icon={FaDrum}>
-            <DebugButton onClick={toggleDebug} aria-label="Toggle debug panel">
-                <Icon icon={FaBug} size={16} />
-            </DebugButton>
+            {config.DEBUG_MODE && (
+                <DebugButton onClick={toggleDebug} aria-label="Toggle debug panel">
+                    <Icon icon={FaBug} size={16} />
+                </DebugButton>
+            )}
             
             {showDebug && (
                 <DebugOverlay>

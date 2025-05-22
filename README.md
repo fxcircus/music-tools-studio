@@ -24,6 +24,18 @@ A simple set of tools to help musicians stay creative and focused.
 - Web Audio API
 - Node.js
 
+## Developer Features
+
+### Debug Mode
+
+The application includes a debug mode that can be enabled for development and troubleshooting:
+
+1. Open `src/config.ts`
+2. Set `DEBUG_MODE: true`
+3. Reload the application
+
+When debug mode is enabled, a debug button will appear in the Metronome component, allowing you to view detailed logs about the metronome's operation.
+
 ## Live Version
 
 Check out the [live version](https://fxcircus.github.io/music-tools-studio) or view the [source code](https://github.com/fxcircus/music-tools-studio) on GitHub.

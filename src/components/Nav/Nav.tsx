@@ -36,8 +36,8 @@ const NavContainer = styled.nav`
 const NavInner = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
 `;
 
@@ -100,6 +100,10 @@ const NavItem = styled(motion.li)`
 const ImportExportGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
+  
+  @media (max-width: 576px) {
+    display: none;
+  }
 `;
 
 const ActionButton = styled(motion.button)`
@@ -444,7 +448,7 @@ const Nav: FC = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          style={{ display: 'flex', alignItems: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}
         >
           <ImportExportGroup>
             <ActionButton 

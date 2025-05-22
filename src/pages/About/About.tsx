@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaInfoCircle, FaGithub, FaReact, FaNodeJs } from 'react-icons/fa';
+import { FaGithub, FaReact, FaNodeJs } from 'react-icons/fa';
 import { Container, Card, CardHeader, CardTitle, CardIconWrapper } from '../../components/common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
@@ -124,10 +124,7 @@ const AboutPage = () => {
     >
       <AboutCard>
         <CardHeader>
-          <CardIconWrapper>
-            <Icon icon={FaInfoCircle} size={20} />
-          </CardIconWrapper>
-          <CardTitle>About Tiles</CardTitle>
+          <CardTitle>Tiles</CardTitle>
         </CardHeader>
         
         <LogoContainer>
@@ -135,14 +132,11 @@ const AboutPage = () => {
         </LogoContainer>
         
         <Section>
-          <Paragraph style={{ textAlign: 'center', fontSize: '1.1em', fontWeight: '500' }}>
-            Tiles — Tools for Creative Flow
+          <Paragraph style={{ textAlign: 'center' }}>
+            Tools for creative flow
           </Paragraph>
-          <Paragraph>
-          A simple set of tools to help musicians stay creative and focused. 
-          </Paragraph>
-          <Paragraph>
-            🔗 <StyledLink href="https://github.com/fxcircus/music-tools-studio" target="_blank" rel="noopener noreferrer">
+          <Paragraph style={{ textAlign: 'center' }}>
+             <StyledLink href="https://github.com/fxcircus/music-tools-studio" target="_blank" rel="noopener noreferrer">
               View the source code on GitHub <Icon icon={FaGithub} size={16} />
             </StyledLink>
           </Paragraph>
@@ -152,7 +146,7 @@ const AboutPage = () => {
           <SectionTitle>Features</SectionTitle>
           <List>
             <ListItem>
-              <Strong>🎯 Flow Timer:</Strong> 
+              <Strong>⏲️ Flow Timer:</Strong> 
               <NestedList>
                 <ListItem>A simple Pomodoro-style timer to help you stay focused while writing, practicing, or producing.</ListItem>
               </NestedList>
@@ -164,7 +158,7 @@ const AboutPage = () => {
               </NestedList>
             </ListItem>
             <ListItem>
-              <Strong>⏱️ Metronome:</Strong>
+              <Strong>🎶 Metronome:</Strong>
               <NestedList>
                 <ListItem>A smooth, visual metronome with BPM controls to keep you in perfect time.</ListItem>
               </NestedList>
