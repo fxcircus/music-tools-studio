@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/music-tools-studio/static/css/main.9527af68.css",
-    "main.js": "/music-tools-studio/static/js/main.aac27e96.js",
+    "main.js": "/music-tools-studio/static/js/main.8250cf2c.js",
     "static/js/787.3f94f89a.chunk.js": "/music-tools-studio/static/js/787.3f94f89a.chunk.js",
     "index.html": "/music-tools-studio/index.html",
     "main.9527af68.css.map": "/music-tools-studio/static/css/main.9527af68.css.map",
-    "main.aac27e96.js.map": "/music-tools-studio/static/js/main.aac27e96.js.map",
+    "main.8250cf2c.js.map": "/music-tools-studio/static/js/main.8250cf2c.js.map",
     "787.3f94f89a.chunk.js.map": "/music-tools-studio/static/js/787.3f94f89a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9527af68.css",
-    "static/js/main.aac27e96.js"
+    "static/js/main.8250cf2c.js"
   ]
 }
