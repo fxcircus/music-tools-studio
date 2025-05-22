@@ -7,6 +7,20 @@ import { FaDice, FaLock, FaUnlock, FaMusic } from 'react-icons/fa';
 import { Card, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
+// Chord quality mapping for different modes
+const chordQualities: Record<string, string[]> = {
+  Major: ['', 'm', 'm', '', '', 'm', 'dim'],
+  Minor: ['m', 'dim', '', 'm', 'm', '', ''],
+  Dorian: ['m', 'm', '', '', 'm', 'dim', ''],
+  Phrygian: ['m', '', '', 'm', 'dim', '', 'm'],
+  Lydian: ['', '', 'm', 'dim', '', 'm', 'm'],
+  Mixolydian: ['', 'm', 'dim', '', 'm', 'm', ''],
+  Locrian: ['dim', '', 'm', 'm', '', 'm', '']
+};
+
+// Roman numeral for chord degrees
+const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
+
 type LockedState = {
   root: boolean;
   scale: boolean;
@@ -37,11 +51,11 @@ const InspirationCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-direction: column;
-  min-height: 420px;
+  min-height: 400px;
   
   @media (max-width: 768px) {
     padding: ${({ theme }) => theme.spacing.sm};
-    min-height: 400px;
+    min-height: 380px;
   }
 `;
 
@@ -54,36 +68,23 @@ const DiceButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   font-size: ${({ theme }) => theme.fontSizes.xxxl};
-  margin: ${({ theme }) => theme.spacing.sm} auto;
+  margin: ${({ theme }) => theme.spacing.xs} auto;
   transition: all ${({ theme }) => theme.transitions.fast};
 `;
 
-const ScaleTitle = styled.h3`
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: ${({ theme }) => theme.fontSizes.xxl};
-  font-weight: 700;
-  text-align: center;
-  margin: ${({ theme }) => theme.spacing.sm} 0;
-  background: ${({ theme }) => theme.colors.accentGradient};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// ScaleTitle component removed to save space
 
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin: ${({ theme }) => theme.spacing.sm} 0;
+  margin: ${({ theme }) => theme.spacing.xs} 0;
   table-layout: fixed;
 `;
 
 const TableRow = styled.tr`
   transition: all ${({ theme }) => theme.transitions.fast};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  height: 40px;
+  height: 36px;
   
   &:last-child {
     border-bottom: none;
@@ -96,7 +97,7 @@ const TableRow = styled.tr`
 
 const TableHeader = styled.td`
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  width: 40px;
+  width: 35px;
   text-align: center;
   vertical-align: middle;
   height: 100%;
@@ -166,7 +167,82 @@ const IconWrapper = styled.span`
 const InspirationCardHeader = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const ChordDegreeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: ${({ theme }) => theme.spacing.xs} 0;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const ChordDegree = styled.div<{ $isSelected: boolean }>`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ $isSelected, theme }) => 
+    $isSelected ? theme.colors.primary : `${theme.colors.primary}22`};
+  color: ${({ $isSelected, theme }) => 
+    $isSelected ? theme.colors.buttonText : theme.colors.text};
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all ${({ theme }) => theme.transitions.fast};
+  margin: 0 ${({ theme }) => theme.spacing.xs};
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.small};
+  }
+`;
+
+const ChordName = styled.div<{ $isSelected: boolean }>`
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ $isSelected, theme }) => 
+    $isSelected ? theme.colors.primary : theme.colors.textSecondary};
+  text-align: center;
+  margin-top: ${({ theme }) => theme.spacing.xs};
+  font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
+`;
+
+const ScaleTonesRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: ${({ theme }) => theme.spacing.xs} 0;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: ${({ theme }) => theme.spacing.xs};
+`;
+
+const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ $highlight, theme }) => 
+    $highlight === 'root' 
+      ? theme.colors.primary 
+      : $highlight === 'chord' 
+        ? `${theme.colors.secondary}88` 
+        : `${theme.colors.primary}22`};
+  color: ${({ $highlight, theme }) => 
+    $highlight === 'root' || $highlight === 'chord'
+      ? theme.colors.buttonText 
+      : theme.colors.text};
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
+  margin: 0 ${({ theme }) => theme.spacing.xs};
+  transition: all ${({ theme }) => theme.transitions.fast};
+`;
+
+const SectionTitle = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  margin: ${({ theme }) => theme.spacing.xs} 0 ${({ theme }) => theme.spacing.xs};
+  font-weight: 500;
 `;
 
 export default function InspirationGenerator({
@@ -191,6 +267,9 @@ export default function InspirationGenerator({
     bpm: false,
     sound: false,
   });
+  
+  // Add state for selected chord
+  const [selectedChord, setSelectedChord] = useState<number | null>(null);
 
   // Update localStorage whenever values change
   useEffect(() => {
@@ -373,6 +452,49 @@ export default function InspirationGenerator({
     return '';
   };
 
+  // Build chord names based on current root and scale
+  const getChordNames = () => {
+    if (!rootEl || !scaleEl || !tonesArrEl || tonesArrEl.length < 7) {
+      return ['C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim'];
+    }
+
+    const qualities = chordQualities[scaleEl as keyof typeof chordQualities] || chordQualities.Major;
+    
+    return tonesArrEl.slice(0, 7).map((note, index) => {
+      return `${note}${qualities[index]}`;
+    });
+  };
+
+  // Get highlighted notes based on selected chord
+  const getHighlightType = (noteIndex: number): 'root' | 'chord' | 'none' => {
+    if (selectedChord === null) return 'none';
+    
+    // In a 7-note scale with triads (1-3-5):
+    // Root is the chord position
+    if (noteIndex === selectedChord) return 'root';
+    
+    // Third is 2 steps up (wrapping around if needed)
+    const thirdPosition = (selectedChord + 2) % 7;
+    // Fifth is 4 steps up (wrapping around if needed)
+    const fifthPosition = (selectedChord + 4) % 7;
+    
+    if (noteIndex === thirdPosition || noteIndex === fifthPosition) {
+      return 'chord';
+    }
+    
+    return 'none';
+  };
+
+  // Handle chord selection
+  const handleChordClick = (chordIndex: number) => {
+    // If clicking the same chord, toggle it off
+    if (selectedChord === chordIndex) {
+      setSelectedChord(null);
+    } else {
+      setSelectedChord(chordIndex);
+    }
+  };
+
   return (
     <InspirationCard
       initial={{ opacity: 0, y: 20 }}
@@ -385,8 +507,6 @@ export default function InspirationGenerator({
         </CardIconWrapper>
         <CardTitle>Inspiration Generator</CardTitle>
       </InspirationCardHeader>
-      
-      <ScaleTitle>{rootEl} {scaleEl}</ScaleTitle>
       
       <DiceButton
         whileHover={{ rotate: 12, scale: 1.1 }}
@@ -432,15 +552,8 @@ export default function InspirationGenerator({
 
           <TableRow>
             <TableHeader></TableHeader>
-            <TableCell>Tones</TableCell>
+            <TableCell>Intervals</TableCell>
             <ValueCell>{tonesEl}</ValueCell>
-          </TableRow>
-
-          {/* computed-note row */}
-          <TableRow>
-            <TableHeader />
-            <TableCell>Scale Tones</TableCell>
-            <ValueCell className={getValueCellClass(computedScaleNotes)}>{computedScaleNotes}</ValueCell>
           </TableRow>
 
           <TableRow>
@@ -468,6 +581,37 @@ export default function InspirationGenerator({
           </TableRow>
         </tbody>
       </StyledTable>
+      
+      {/* Add Chord Degrees section */}
+      <SectionTitle>Chord Degrees</SectionTitle>
+      <ChordDegreeContainer>
+        {romanNumerals.map((numeral, index) => (
+          <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <ChordDegree 
+              $isSelected={selectedChord === index}
+              onClick={() => handleChordClick(index)}
+            >
+              {numeral}
+            </ChordDegree>
+            <ChordName $isSelected={selectedChord === index}>
+              {getChordNames()[index]}
+            </ChordName>
+          </div>
+        ))}
+      </ChordDegreeContainer>
+      
+      {/* Add Scale Tones visualization */}
+      <SectionTitle>Scale Tones</SectionTitle>
+      <ScaleTonesRow>
+        {tonesArrEl.slice(0, 8).map((note, index) => (
+          <ScaleToneNote 
+            key={index}
+            $highlight={index < 7 ? getHighlightType(index) : 'none'}
+          >
+            {note}
+          </ScaleToneNote>
+        ))}
+      </ScaleTonesRow>
     </InspirationCard>
   );
 }

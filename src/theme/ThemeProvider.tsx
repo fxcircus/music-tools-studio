@@ -68,12 +68,12 @@ export const lightTheme = {
     slow: '0.4s ease',
   },
   spacing: {
-    xs: '0.25rem',
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem',
-    xxl: '3rem',
+    xs: '0.2rem',
+    sm: '0.45rem',
+    md: '0.9rem',
+    lg: '1.35rem',
+    xl: '1.8rem',
+    xxl: '2.7rem',
   },
 };
 
@@ -127,12 +127,12 @@ export const darkTheme = {
     slow: '0.4s ease',
   },
   spacing: {
-    xs: '0.25rem',
-    sm: '0.5rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem',
-    xxl: '3rem',
+    xs: '0.2rem',
+    sm: '0.45rem',
+    md: '0.9rem',
+    lg: '1.35rem',
+    xl: '1.8rem',
+    xxl: '2.7rem',
   },
 };
 

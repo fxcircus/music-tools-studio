@@ -13,7 +13,7 @@ export const Card = styled(motion.div)`
   background-color: ${({ theme }) => theme.colors.card};
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   box-shadow: ${({ theme }) => theme.shadows.medium};
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md};
   margin-bottom: 0;
   transition: all ${({ theme }) => theme.transitions.normal};
   height: 100%;
@@ -27,7 +27,7 @@ export const Card = styled(motion.div)`
   }
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.sm};
     border-radius: ${({ theme }) => theme.borderRadius.small};
   }
 `;
@@ -366,10 +366,10 @@ export const CardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
   
   @media (max-width: 768px) {
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
   }
 `;
 
@@ -386,6 +386,6 @@ export const CardIconWrapper = styled.span`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.colors.primary};
-  margin-right: ${({ theme }) => theme.spacing.sm};
+  margin-right: ${({ theme }) => theme.spacing.xs};
   font-size: ${({ theme }) => theme.fontSizes.lg};
 `;

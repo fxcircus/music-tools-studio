@@ -37,7 +37,7 @@ const TwoColumnGrid = styled.div`
   }
 `;
 
-const GridItem = styled(motion.div)<{ $order?: number }>`
+const GridItem = styled(motion.div)<{ $order?: number, $desktopOrder?: number }>`
   height: 100%;
   display: flex;
   
@@ -49,6 +49,10 @@ const GridItem = styled(motion.div)<{ $order?: number }>`
     @media (max-width: 768px) {
       margin-top: ${({ theme }) => theme.spacing.sm};
     }
+  }
+  
+  @media (min-width: 1025px) {
+    order: ${({ $desktopOrder }) => $desktopOrder !== undefined ? $desktopOrder : 'initial'};
   }
   
   @media (max-width: 1024px) {
@@ -92,7 +96,7 @@ const CurrentProject: FC<LoaderProps> = () => {
             animate="visible"
         >
             <TwoColumnGrid>
-                <GridItem variants={itemVariants} $order={4}>
+                <GridItem variants={itemVariants} $order={4} $desktopOrder={3}>
                     <PomodoroTimer />
                 </GridItem>
                 
@@ -115,7 +119,7 @@ const CurrentProject: FC<LoaderProps> = () => {
                     />
                 </GridItem>
                 
-                <GridItem variants={itemVariants} $order={3}>
+                <GridItem variants={itemVariants} $order={3} $desktopOrder={4}>
                     <NotePad 
                         notes={state.notes} 
                         setNotes={(notes) => updateState({ notes })} 
