@@ -11,6 +11,7 @@ const Nav: FC = () => {
     let rootEl = 'C';
     let scaleEl = 'Major';
     let tonesEl = 'T - T - S - T - T - T - S';
+    let tonesArrEl = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'];
     let bpmEl = '100';
     let soundEl = 'Guitar';
     
@@ -28,6 +29,7 @@ const Nav: FC = () => {
       rootEl: rootEl,
       scaleEl: scaleEl,
       tonesEl: tonesEl,
+      tonesArrEl: tonesArrEl,
       bpmEl: bpmEl,
       soundEl: soundEl
     };

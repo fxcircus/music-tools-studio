@@ -16,6 +16,7 @@ const CurrentProject: FC<LoaderProps> = ({ result: passedResult }) => {
     const [rootEl, setRootEl] = useState("C");
     const [scaleEl, setScaleEl] = useState("Major");
     const [tonesEl, setTonesEl] = useState("T - T - S - T - T - T - S");
+    const [tonesArrEl, setTonesArrEl] = useState<string[]>(["C", "D", "E", "F", "G", "A", "B", "C"]);
     const [bpmEl, setBpmEl] = useState("100");
     const [soundEl, setSoundEl] = useState("Guitar");
 
@@ -28,6 +29,7 @@ const CurrentProject: FC<LoaderProps> = ({ result: passedResult }) => {
                 rootEl={rootEl}     setRootEl={setRootEl}
                 scaleEl={scaleEl}   setScaleEl={setScaleEl}
                 tonesEl={tonesEl}   setTonesEl={setTonesEl}
+                tonesArrEl={tonesArrEl} setTonesArrEl={setTonesArrEl}
                 bpmEl={bpmEl}       setBpmEl={setBpmEl}
                 soundEl={soundEl}   setSoundEl={setSoundEl}
             />

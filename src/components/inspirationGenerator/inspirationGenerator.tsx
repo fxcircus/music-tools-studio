@@ -20,6 +20,8 @@ interface componentProps {
   setScaleEl: (scaleEl: string) => void;
   tonesEl: string;
   setTonesEl: (tonesEl: string) => void;
+  tonesArrEl: string[];
+  setTonesArrEl: (tonesArrEl: string[]) => void;
   bpmEl: string;
   setBpmEl: (bpmEl: string) => void;
   soundEl: string;
@@ -35,6 +37,8 @@ export default function InspirationGenerator({
   setScaleEl,
   tonesEl,
   setTonesEl,
+  tonesArrEl,
+  setTonesArrEl,
   bpmEl,
   setBpmEl,
   soundEl,
@@ -138,6 +142,7 @@ export default function InspirationGenerator({
     // COMPUTED scale tones with dashes/spaces
     const tonesArr = generateScaleTones(newRoot, newScale);
     setComputedScaleNotes(tonesArr.join(" - "));
+    setTonesArrEl(tonesArr);
 
     // SOUND
     if (!locked.sound) {
