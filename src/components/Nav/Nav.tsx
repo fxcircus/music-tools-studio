@@ -390,13 +390,14 @@ const Nav: FC = () => {
         >
           <NavItems>
             <NavItem 
-              active={true} 
+              active={window.location.pathname === '/' || window.location.pathname === '/music-tools-studio/'} 
               whileHover={{ scale: 1.05 }} 
               onClick={() => navigate('/')}
             >
               Project
             </NavItem>
             <NavItem 
+              active={window.location.pathname.includes('/about')}
               whileHover={{ scale: 1.05 }} 
               onClick={() => navigate('/about')}
             >

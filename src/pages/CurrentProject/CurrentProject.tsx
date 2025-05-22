@@ -35,7 +35,7 @@ const TwoColumnGrid = styled.div`
   }
 `;
 
-const GridItem = styled(motion.div)`
+const GridItem = styled(motion.div)<{ $order?: number }>`
   height: 100%;
   display: flex;
   
@@ -47,6 +47,10 @@ const GridItem = styled(motion.div)`
     @media (max-width: 768px) {
       margin-top: ${({ theme }) => theme.spacing.sm};
     }
+  }
+  
+  @media (max-width: 1024px) {
+    order: ${({ $order }) => $order || 0};
   }
 `;
 
@@ -125,11 +129,11 @@ const CurrentProject: FC<LoaderProps> = () => {
             animate="visible"
         >
             <TwoColumnGrid>
-                <GridItem variants={itemVariants}>
+                <GridItem variants={itemVariants} $order={4}>
                     <PomodoroTimer />
                 </GridItem>
                 
-                <GridItem variants={itemVariants}>
+                <GridItem variants={itemVariants} $order={1}>
                     <InspirationGenerator 
                         animate={animate}   setAnimate={setAnimate}
                         rootEl={rootEl}     setRootEl={setRootEl}
@@ -141,11 +145,11 @@ const CurrentProject: FC<LoaderProps> = () => {
                     />
                 </GridItem>
                 
-                <GridItem variants={itemVariants}>
+                <GridItem variants={itemVariants} $order={3}>
                     <NotePad notes={notes} setNotes={setNotes} />
                 </GridItem>
                 
-                <GridItem variants={itemVariants}>
+                <GridItem variants={itemVariants} $order={2}>
                     <Metronome bpm={parseInt(bpmEl, 10)} />
                 </GridItem>
             </TwoColumnGrid>
