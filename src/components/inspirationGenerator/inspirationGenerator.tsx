@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaDice, FaLock, FaUnlock, FaMusic } from 'react-icons/fa';
-import { Card, CardHeader, CardTitle, CardIconWrapper } from '../common/StyledComponents';
+import { Card, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
 type LockedState = {
