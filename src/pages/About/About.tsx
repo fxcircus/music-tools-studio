@@ -136,7 +136,7 @@ const AboutPage = () => {
         
         <Section>
           <Paragraph>
-            🎼 Music Tools is a sleek set of utilities built to support musicians, songwriters, and producers throughout their creative process. Designed with simplicity in mind, it brings essential tools together in one place to keep your workflow smooth and inspired.
+          A simple set of tools to help musicians stay creative and focused. 
           </Paragraph>
           <Paragraph>
             🔗 <StyledLink href="https://github.com/fxcircus/music-tools-studio" target="_blank" rel="noopener noreferrer">
@@ -149,23 +149,28 @@ const AboutPage = () => {
           <SectionTitle>Features</SectionTitle>
           <List>
             <ListItem>
-              <Strong>🎯 Flow Timer:</Strong> A Pomodoro-style timer to help you stay focused and structured during writing or practice sessions.
-            </ListItem>
-            <ListItem>
-              <Strong>🎲 Inspiration Generator:</Strong> Spark new ideas with randomly generated musical prompts:
+              <Strong>🎯 Flow Timer:</Strong> 
               <NestedList>
-                <ListItem>Generate random root notes and scales</ListItem>
-                <ListItem>Visualize scale patterns and tones</ListItem>
-                <ListItem>Receive tempo (BPM) suggestions</ListItem>
-                <ListItem>Get sound and instrument hints</ListItem>
-                <ListItem>Lock any setting to keep while refreshing others</ListItem>
+                <ListItem>A simple Pomodoro-style timer to help you stay focused while writing, practicing, or producing.</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
-              <Strong>⏱️ Metronome:</Strong> A smooth, visual metronome with BPM controls to keep you in perfect time.
+              <Strong>🎲 Inspiration Generator:</Strong>
+              <NestedList>
+                <ListItem>Get instant musical ideas with random root notes, scales, BPM, and instrument suggestions. Lock in what you like and shuffle the rest.</ListItem>
+              </NestedList>
             </ListItem>
             <ListItem>
-              <Strong>📝 Notes:</Strong> Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.
+              <Strong>⏱️ Metronome:</Strong>
+              <NestedList>
+                <ListItem>A smooth, visual metronome with BPM controls to keep you in perfect time.</ListItem>
+              </NestedList>
+            </ListItem>
+            <ListItem>
+              <Strong>📝 Notes:</Strong>
+              <NestedList>
+                <ListItem>Jot down lyrics, chord progressions, pedal settings, or creative thoughts on the fly.</ListItem>
+              </NestedList>
             </ListItem>
           </List>
         </Section>
@@ -180,10 +185,6 @@ const AboutPage = () => {
             <TechItem>
               <IconContainer>TS</IconContainer>
               TypeScript
-            </TechItem>
-            <TechItem>
-              <IconContainer>💅</IconContainer>
-              Styled Components
             </TechItem>
             <TechItem>
               <IconContainer>🎵</IconContainer>
@@ -201,7 +202,7 @@ const AboutPage = () => {
           <Paragraph style={{ marginTop: '1rem' }}>
             <StyledLink href="https://www.npmjs.com/package/tone" target="_blank" rel="noopener noreferrer">
               Tone.js
-            </StyledLink> powers the precise audio engine behind the metronome functionality.
+            </StyledLink> Audio engine for the metronome.
           </Paragraph>
         </Section>
       </AboutCard>
