@@ -54,7 +54,7 @@ const InspirationCard = styled(Card)`
   min-height: 400px;
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => theme.spacing.sm};
+    padding: ${({ theme }) => theme.spacing.xs};
     min-height: 380px;
   }
 `;
@@ -93,6 +93,10 @@ const TableRow = styled.tr`
   &:hover {
     background-color: ${({ theme }) => `${theme.colors.primary}11`};
   }
+  
+  @media (max-width: 768px) {
+    height: 32px; // Smaller height on mobile
+  }
 `;
 
 const TableHeader = styled.td`
@@ -101,6 +105,11 @@ const TableHeader = styled.td`
   text-align: center;
   vertical-align: middle;
   height: 100%;
+  
+  @media (max-width: 768px) {
+    width: 30px; // Smaller width on mobile
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+  }
 `;
 
 const TableCell = styled.td`
@@ -110,6 +119,11 @@ const TableCell = styled.td`
   width: 40%;
   vertical-align: middle;
   height: 100%;
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size
+  }
 `;
 
 const ValueCell = styled.td`
@@ -130,6 +144,15 @@ const ValueCell = styled.td`
   
   &.very-long-content {
     font-size: ${({ theme }) => theme.fontSizes.xs};
+  }
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size by default on mobile
+    
+    &.long-content, &.very-long-content {
+      font-size: ${({ theme }) => theme.fontSizes.xs}; // Even smaller for long content
+    }
   }
 `;
 
@@ -178,6 +201,11 @@ const ChordDegreeContainer = styled.div`
   width: 100%;
   overflow-x: auto;
   padding-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  @media (max-width: 768px) {
+    justify-content: flex-start; // Left align on mobile
+    gap: ${({ theme }) => theme.spacing.xs}; // Smaller gaps on mobile
+  }
 `;
 
 const ChordDegree = styled.div<{ $isSelected: boolean }>`
@@ -198,6 +226,12 @@ const ChordDegree = styled.div<{ $isSelected: boolean }>`
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.shadows.small};
   }
+  
+  @media (max-width: 768px) {
+    min-width: 30px; // Smaller min-width on mobile
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    margin: 0; // Remove margin on mobile (using gap instead)
+  }
 `;
 
 const ChordName = styled.div<{ $isSelected: boolean }>`
@@ -207,6 +241,10 @@ const ChordName = styled.div<{ $isSelected: boolean }>`
   text-align: center;
   margin-top: ${({ theme }) => theme.spacing.xs};
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
+  
+  @media (max-width: 768px) {
+    font-size: ${({ theme }) => theme.fontSizes.xs}; // Smaller font on mobile
+  }
 `;
 
 const ScaleTonesRow = styled.div`
@@ -216,6 +254,11 @@ const ScaleTonesRow = styled.div`
   width: 100%;
   overflow-x: auto;
   padding-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  @media (max-width: 768px) {
+    justify-content: flex-start; // Left align on mobile
+    gap: ${({ theme }) => theme.spacing.xs}; // Smaller gaps on mobile
+  }
 `;
 
 const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
@@ -236,6 +279,12 @@ const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
   text-align: center;
   margin: 0 ${({ theme }) => theme.spacing.xs};
   transition: all ${({ theme }) => theme.transitions.fast};
+  
+  @media (max-width: 768px) {
+    min-width: 30px; // Smaller min-width on mobile
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    margin: 0; // Remove margin on mobile (using gap instead)
+  }
 `;
 
 const SectionTitle = styled.div`
@@ -243,6 +292,11 @@ const SectionTitle = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
   margin: ${({ theme }) => theme.spacing.xs} 0 ${({ theme }) => theme.spacing.xs};
   font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font on mobile
+    margin-top: ${({ theme }) => theme.spacing.xs}; // Tighter spacing
+  }
 `;
 
 export default function InspirationGenerator({
