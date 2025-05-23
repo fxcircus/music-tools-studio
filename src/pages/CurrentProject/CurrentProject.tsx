@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Container } from '../../components/common/StyledComponents';
@@ -8,6 +8,7 @@ import NotePad from "../../components/Notepad/Notepad";
 import Metronome from "../../components/Metronome/Metronome";
 import { TilesState } from "../../utils/types";
 import { loadAppState, saveAppState } from "../../utils/storageService";
+import { decodeURLToState, hasStateParams } from "../../utils/urlSharing";
 
 interface LoaderProps {
     result?: string;
@@ -63,6 +64,23 @@ const GridItem = styled(motion.div)<{ $order?: number, $desktopOrder?: number }>
 const CurrentProject: FC<LoaderProps> = () => {
     const [state, setState] = useState<TilesState>(loadAppState());
     const [animate, setAnimate] = useState(false);
+
+    // Check for URL parameters on mount
+    useEffect(() => {
+        if (hasStateParams(window.location.href)) {
+            const urlState = decodeURLToState(window.location.href);
+            
+            // If URL has valid state parameters, update state with them
+            if (Object.keys(urlState).length > 0) {
+                // Merge with existing state to ensure we have all required fields
+                setState(prevState => {
+                    const updatedState = { ...prevState, ...urlState };
+                    saveAppState(updatedState);
+                    return updatedState;
+                });
+            }
+        }
+    }, []);
 
     // Update state and save to localStorage whenever a component of state changes
     const updateState = (newState: Partial<TilesState>) => {

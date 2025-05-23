@@ -18,7 +18,8 @@ Try [live version](https://fxcircus.github.io/music-tools-studio) on GitHub page
 
 - **📝 Notes:** Write down lyrics, chord progressions, FX pedal settings, etc'...
 
-- **💾 Save Your Work:** Export your project settings and notes to continue later or share with collaborators. Import previously saved projects with a single click.
+- **🔗 Share Your Work:** Copy a URL with your current settings — perfect for saving or sharing.
+  (Export/import via JSON is still in the code, just commented out.)
 
 - **🌓 Dark / Light Modes:** Yes.
 

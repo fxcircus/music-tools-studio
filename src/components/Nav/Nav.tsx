@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../theme/ThemeProvider';
-import { FaSun, FaMoon, FaFileImport, FaFileExport, FaTimes } from 'react-icons/fa';
+import { FaSun, FaMoon, FaFileImport, FaFileExport, FaTimes, FaLink } from 'react-icons/fa';
 import { Icon } from '../../utils/IconHelper';
+import { loadAppState } from '../../utils/storageService';
+import { copyStateURLToClipboard } from '../../utils/urlSharing';
+import Toast from '../common/Toast';
 
 interface Project {
   id: string;
@@ -100,10 +103,6 @@ const NavItem = styled(motion.li)`
 const ImportExportGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
-  
-  @media (max-width: 576px) {
-    display: none;
-  }
 `;
 
 const ActionButton = styled(motion.button)`
@@ -127,6 +126,14 @@ const ActionButton = styled(motion.button)`
 
   &:active {
     transform: translateY(0);
+  }
+  
+  @media (max-width: 576px) {
+    padding: ${({ theme }) => theme.spacing.xs};
+    
+    span:not(:first-child) {
+      display: none;
+    }
   }
 `;
 
@@ -249,9 +256,12 @@ const Nav: FC = () => {
   const navigate = useNavigate();
   const [showImportModal, setShowImportModal] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { isDarkMode, toggleTheme } = useTheme();
 
+  // Legacy JSON export option. Can be re-enabled if needed.
   const exportProject = () => {
     // Try to get values from localStorage if they exist
     let notes = localStorage.getItem('tilesNotes') || '';
@@ -314,6 +324,7 @@ const Nav: FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  // Legacy JSON import option. Can be re-enabled if needed.
   const handleImportClick = () => {
     setShowImportModal(true);
   };
@@ -398,6 +409,23 @@ const Nav: FC = () => {
     reader.readAsText(file);
   };
 
+  const handleShareLink = async () => {
+    const currentState = loadAppState();
+    const success = await copyStateURLToClipboard(currentState);
+    
+    if (success) {
+      setToastMessage('Link copied! Bookmark to reopen later or share with a friend.');
+      setShowToast(true);
+    } else {
+      setToastMessage('❌ Failed to copy link. Please try again.');
+      setShowToast(true);
+    }
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
+
   return (
     <NavContainer>
       <NavInner>
@@ -452,6 +480,19 @@ const Nav: FC = () => {
         >
           <ImportExportGroup>
             <ActionButton 
+              onClick={handleShareLink}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title="Copy Share Link"
+            >
+              <IconWrapper>
+                <Icon icon={FaLink} size={16} />
+              </IconWrapper>
+              <span>Share</span>
+            </ActionButton>
+            
+            {/* Legacy JSON export option. Can be re-enabled if needed.
+            <ActionButton 
               onClick={exportProject}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -462,7 +503,9 @@ const Nav: FC = () => {
               </IconWrapper>
               Export
             </ActionButton>
+            */}
             
+            {/* Legacy JSON import option. Can be re-enabled if needed.
             <ActionButton 
               onClick={handleImportClick}
               whileHover={{ scale: 1.05 }}
@@ -474,6 +517,7 @@ const Nav: FC = () => {
               </IconWrapper>
               Import
             </ActionButton>
+            */}
           </ImportExportGroup>
           
           <ThemeToggleButton 
@@ -508,11 +552,11 @@ const Nav: FC = () => {
             >
               <ModalHeader>
                 <ModalTitle>Import Project</ModalTitle>
-                              <CloseButton onClick={handleCloseModal}>
-                <IconWrapper>
-                  <Icon icon={FaTimes} size={20} />
-                </IconWrapper>
-              </CloseButton>
+                <CloseButton onClick={handleCloseModal}>
+                  <IconWrapper>
+                    <Icon icon={FaTimes} size={20} />
+                  </IconWrapper>
+                </CloseButton>
               </ModalHeader>
               
               <DropArea 
@@ -544,6 +588,14 @@ const Nav: FC = () => {
           </ModalOverlay>
         )}
       </AnimatePresence>
+      
+      <Toast 
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={handleCloseToast}
+        type="success"
+        duration={3000}
+      />
     </NavContainer>
   );
 }

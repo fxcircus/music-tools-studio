@@ -99,17 +99,7 @@ const ControlButton = styled(motion.button)`
 `;
 
 const PlayPauseButton = styled(ControlButton)`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.buttonText};
-  border-radius: ${({ theme }) => theme.borderRadius.round};
-  padding: ${({ theme }) => theme.spacing.md};
-  box-shadow: ${({ theme }) => theme.shadows.small};
-  margin: 0 auto;
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
-    box-shadow: ${({ theme }) => theme.shadows.medium};
-  }
+  font-size: ${({ theme }) => theme.fontSizes.xxxl};
 `;
 
 const BeatIndicator = styled(motion.div)`
@@ -627,7 +617,7 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
             <ControlsContainer>
                 <PlayPauseButton 
                     onClick={toggleMetronome}
-                    whileHover={{ scale: 1.1 }} 
+                    whileHover={{ scale: 1.2 }} 
                     whileTap={{ scale: 0.9 }}
                     aria-label={metronomePlaying ? "Pause metronome" : "Play metronome"}
                 >

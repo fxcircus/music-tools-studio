@@ -170,9 +170,10 @@ const AboutPage = () => {
               </NestedList>
             </ListItem>
             <ListItem>
-              <Strong>💾 Save Your Work:</Strong>
+              <Strong>🔗 Share Your Work:</Strong>
               <NestedList>
-                <ListItem>Save or load your project as a JSON file to pick up where you left off or share with others.</ListItem>
+                <ListItem>Copy a URL with your current settings — perfect for saving or sharing.</ListItem>
+                <ListItem>(Export/import via JSON is still in the code, just commented out.)</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
