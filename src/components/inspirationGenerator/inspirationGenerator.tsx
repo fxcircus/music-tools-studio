@@ -19,7 +19,7 @@ const chordQualities: Record<string, string[]> = {
 };
 
 // Roman numeral for chord degrees
-const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
+const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii'];
 
 type LockedState = {
   root: boolean;
@@ -262,7 +262,10 @@ const ScaleTonesRow = styled.div`
 `;
 
 const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ $highlight, theme }) => 
     $highlight === 'root' 
@@ -281,9 +284,20 @@ const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
   transition: all ${({ theme }) => theme.transitions.fast};
   
   @media (max-width: 768px) {
-    min-width: 30px; // Smaller min-width on mobile
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
-    margin: 0; // Remove margin on mobile (using gap instead)
+    min-width: 30px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+    margin: 0;
+  }
+`;
+
+const IntervalLabel = styled.div`
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  margin-top: ${({ theme }) => theme.spacing.xs};
+  font-weight: 400;
+  
+  @media (max-width: 768px) {
+    font-size: calc(${({ theme }) => theme.fontSizes.xs} * 0.9);
   }
 `;
 
@@ -523,17 +537,25 @@ export default function InspirationGenerator({
   const getHighlightType = (noteIndex: number): 'root' | 'chord' | 'none' => {
     if (selectedChord === null) return 'none';
     
-    // In a 7-note scale with triads (1-3-5):
     // Root is the chord position
     if (noteIndex === selectedChord) return 'root';
     
-    // Third is 2 steps up (wrapping around if needed)
-    const thirdPosition = (selectedChord + 2) % 7;
-    // Fifth is 4 steps up (wrapping around if needed)
-    const fifthPosition = (selectedChord + 4) % 7;
-    
-    if (noteIndex === thirdPosition || noteIndex === fifthPosition) {
-      return 'chord';
+    // Special case for IV chord (index 3)
+    if (selectedChord === 3) {
+      // Third is 2 steps up (2 + 3 = 5)
+      if (noteIndex === 5) return 'chord';
+      // Use high octave note (index 7) as the fifth instead of the usual pattern
+      if (noteIndex === 7) return 'chord';
+    } else {
+      // Standard triad pattern for other chords
+      // Third is 2 steps up (wrapping around if needed)
+      const thirdPosition = (selectedChord + 2) % 7;
+      // Fifth is 4 steps up (wrapping around if needed)
+      const fifthPosition = (selectedChord + 4) % 7;
+      
+      if (noteIndex === thirdPosition || noteIndex === fifthPosition) {
+        return 'chord';
+      }
     }
     
     return 'none';
@@ -547,6 +569,21 @@ export default function InspirationGenerator({
     } else {
       setSelectedChord(chordIndex);
     }
+  };
+
+  // Modify returnIntervalPattern function to map the correct semitone intervals to the scale
+  const getSemitoneIntervals = (scaleType: string): number[] => {
+    const intervalMap: Record<string, number[]> = {
+      Major: [2, 2, 1, 2, 2, 2, 1],
+      Minor: [2, 1, 2, 2, 1, 2, 2],
+      Dorian: [2, 1, 2, 2, 2, 1, 2],
+      Phrygian: [1, 2, 2, 2, 1, 2, 2],
+      Lydian: [2, 2, 2, 1, 2, 2, 1],
+      Mixolydian: [2, 2, 1, 2, 2, 1, 2],
+      Locrian: [1, 2, 2, 1, 2, 2, 2],
+    };
+    
+    return intervalMap[scaleType as keyof typeof intervalMap] || [2, 2, 1, 2, 2, 2, 1];
   };
 
   return (
@@ -605,12 +642,6 @@ export default function InspirationGenerator({
           </TableRow>
 
           <TableRow>
-            <TableHeader></TableHeader>
-            <TableCell>Intervals</TableCell>
-            <ValueCell>{tonesEl}</ValueCell>
-          </TableRow>
-
-          <TableRow>
             <TableHeader>
               <LockIconWrapper $isLocked={locked.bpm} onClick={() => toggleLock("bpm")}>
                 <IconWrapper>
@@ -654,17 +685,34 @@ export default function InspirationGenerator({
         ))}
       </ChordDegreeContainer>
       
-      {/* Add Scale Tones visualization */}
+      {/* Update Scale Tones visualization to include intervals */}
       <SectionTitle>Scale Tones</SectionTitle>
       <ScaleTonesRow>
-        {tonesArrEl.slice(0, 8).map((note, index) => (
-          <ScaleToneNote 
-            key={index}
-            $highlight={index < 7 ? getHighlightType(index) : 'none'}
-          >
-            {note}
-          </ScaleToneNote>
-        ))}
+        {tonesArrEl.slice(0, 8).map((note, index) => {
+          // Get the interval for this note to the next note
+          const intervals = getSemitoneIntervals(scaleEl);
+          // Only show interval if it's not the last note
+          const shouldShowInterval = index < 7;
+          const interval = shouldShowInterval ? intervals[index] : null;
+          
+          return (
+            <ScaleToneNote 
+              key={index}
+              $highlight={getHighlightType(index)}
+            >
+              {note}
+              {shouldShowInterval && interval !== null && (
+                <IntervalLabel 
+                  title={interval === 1 ? 
+                    "Half Step (1 semitone)" : 
+                    `Whole Step${interval > 2 ? "s" : ""} (${interval} semitones)`}
+                >
+                  +{interval}
+                </IntervalLabel>
+              )}
+            </ScaleToneNote>
+          );
+        })}
       </ScaleTonesRow>
     </InspirationCard>
   );
