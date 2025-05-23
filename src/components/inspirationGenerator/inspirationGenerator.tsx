@@ -52,6 +52,7 @@ const InspirationCard = styled(Card)`
   display: flex;
   flex-direction: column;
   min-height: 400px;
+  overflow: visible;
   
   @media (max-width: 768px) {
     padding: ${({ theme }) => theme.spacing.xs};
@@ -72,26 +73,28 @@ const DiceButton = styled(motion.button)`
   transition: all ${({ theme }) => theme.transitions.fast};
 `;
 
-// ScaleTitle component removed to save space
-
 const StyledTable = styled.table`
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin: ${({ theme }) => theme.spacing.xs} 0;
-  table-layout: fixed;
+  table-layout: auto;
+  overflow: visible;
 `;
 
 const TableRow = styled.tr`
   transition: all ${({ theme }) => theme.transitions.fast};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.border};
   height: 36px;
-  
-  &:last-child {
-    border-bottom: none;
-  }
   
   &:hover {
     background-color: ${({ theme }) => `${theme.colors.primary}11`};
+  }
+  
+  &.chord-scale-row {
+    height: auto;
+    padding: ${({ theme }) => theme.spacing.sm} 0;
+    border-bottom: 2px solid ${({ theme }) => theme.colors.border};
   }
   
   @media (max-width: 768px) {
@@ -99,21 +102,49 @@ const TableRow = styled.tr`
   }
 `;
 
+const SpacerCell = styled.td`
+  width: 30px;
+  padding: 0;
+  
+  @media (max-width: 768px) {
+    width: 20px;
+  }
+`;
+
 const TableHeader = styled.td`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  padding: ${({ theme }) => `${theme.spacing.xs} 0`};
   width: 35px;
   text-align: center;
   vertical-align: middle;
   height: 100%;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-weight: 500;
   
   @media (max-width: 768px) {
     width: 30px; // Smaller width on mobile
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
+  }
+`;
+
+const LabelCell = styled.td`
+  padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-weight: 500;
+  width: 120px;
+  vertical-align: middle;
+  height: 100%;
+  text-align: left;
+  white-space: nowrap;
+  
+  @media (max-width: 768px) {
+    width: 100px;
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
+    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size
   }
 `;
 
 const TableCell = styled.td`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  padding: ${({ theme }) => `${theme.spacing.xs} 0`};
   color: ${({ theme }) => theme.colors.textSecondary};
   font-weight: 500;
   width: 40%;
@@ -121,17 +152,17 @@ const TableCell = styled.td`
   height: 100%;
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
     font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size
   }
 `;
 
 const ValueCell = styled.td`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  padding: ${({ theme }) => `${theme.spacing.xs} 0`};
   color: ${({ theme }) => theme.colors.text};
   font-weight: 600;
   text-align: right;
-  width: 50%; 
+  max-width: 40%; 
   white-space: nowrap;
   overflow: hidden;
   vertical-align: middle;
@@ -147,12 +178,67 @@ const ValueCell = styled.td`
   }
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
     font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size by default on mobile
     
     &.long-content, &.very-long-content {
       font-size: ${({ theme }) => theme.fontSizes.xs}; // Even smaller for long content
     }
+  }
+`;
+
+// Keep this definition if needed for any remaining references
+const EmptyTableCell = styled(TableCell)`
+  width: 1px;
+  padding: 0;
+`;
+
+const ExtendedInfoCell = styled.td`
+  padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+  color: ${({ theme }) => theme.colors.text};
+  vertical-align: middle;
+  height: 100%;
+  text-align: right;
+  width: auto;
+  overflow: visible;
+  min-width: 0;
+  
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+  }
+`;
+
+const ChordDegreesContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.xs};
+  overflow-x: visible;
+  padding-right: ${({ theme }) => theme.spacing.sm};
+  margin-left: auto;
+  width: fit-content;
+  position: relative;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    padding-right: ${({ theme }) => theme.spacing.xs};
+  }
+`;
+
+const ScaleTonesContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.xs};
+  overflow-x: visible;
+  padding-right: ${({ theme }) => theme.spacing.sm};
+  margin-left: auto;
+  width: fit-content;
+  position: relative;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+    padding-right: ${({ theme }) => theme.spacing.xs};
   }
 `;
 
@@ -165,13 +251,6 @@ const LockIconWrapper = styled.div<{ $isLocked: boolean }>`
   &:hover {
     transform: scale(1.2);
   }
-`;
-
-const GeneratorSubtitle = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const SubtitleText = styled.p`
@@ -194,20 +273,6 @@ const InspirationCardHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
-const ChordDegreeContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: ${({ theme }) => theme.spacing.xs} 0;
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: ${({ theme }) => theme.spacing.xs};
-  
-  @media (max-width: 768px) {
-    justify-content: flex-start; // Left align on mobile
-    gap: ${({ theme }) => theme.spacing.xs}; // Smaller gaps on mobile
-  }
-`;
-
 const ChordDegree = styled.div<{ $isSelected: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -216,11 +281,10 @@ const ChordDegree = styled.div<{ $isSelected: boolean }>`
   color: ${({ $isSelected, theme }) => 
     $isSelected ? theme.colors.buttonText : theme.colors.text};
   font-weight: 600;
-  min-width: 40px;
+  min-width: 30px;
   text-align: center;
   cursor: pointer;
   transition: all ${({ theme }) => theme.transitions.fast};
-  margin: 0 ${({ theme }) => theme.spacing.xs};
   
   &:hover {
     transform: translateY(-2px);
@@ -228,9 +292,8 @@ const ChordDegree = styled.div<{ $isSelected: boolean }>`
   }
   
   @media (max-width: 768px) {
-    min-width: 30px; // Smaller min-width on mobile
+    min-width: 25px; // Smaller min-width on mobile
     padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
-    margin: 0; // Remove margin on mobile (using gap instead)
   }
 `;
 
@@ -244,20 +307,6 @@ const ChordName = styled.div<{ $isSelected: boolean }>`
   
   @media (max-width: 768px) {
     font-size: ${({ theme }) => theme.fontSizes.xs}; // Smaller font on mobile
-  }
-`;
-
-const ScaleTonesRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: ${({ theme }) => theme.spacing.xs} 0;
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: ${({ theme }) => theme.spacing.xs};
-  
-  @media (max-width: 768px) {
-    justify-content: flex-start; // Left align on mobile
-    gap: ${({ theme }) => theme.spacing.xs}; // Smaller gaps on mobile
   }
 `;
 
@@ -278,15 +327,13 @@ const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
       ? theme.colors.buttonText 
       : theme.colors.text};
   font-weight: 500;
-  min-width: 40px;
+  min-width: 30px;
   text-align: center;
-  margin: 0 ${({ theme }) => theme.spacing.xs};
   transition: all ${({ theme }) => theme.transitions.fast};
   
   @media (max-width: 768px) {
-    min-width: 30px;
+    min-width: 25px;
     padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
-    margin: 0;
   }
 `;
 
@@ -301,15 +348,34 @@ const IntervalLabel = styled.div`
   }
 `;
 
-const SectionTitle = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.md};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin: ${({ theme }) => theme.spacing.xs} 0 ${({ theme }) => theme.spacing.xs};
-  font-weight: 500;
+// Use a more direct approach with hr elements
+const Divider = styled.hr`
+  border: none;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.border};
+  opacity: 0.4;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+`;
+
+// Update the SeparatorRow to use the simpler approach
+const SeparatorCell = styled.td`
+  padding: 0 !important;
+  background-color: transparent;
+  border: none;
+  height: 1px;
+`;
+
+// Re-add the ItemWrapper component that was accidentally removed
+const ItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40px; // Fixed width to ensure alignment
   
   @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font on mobile
-    margin-top: ${({ theme }) => theme.spacing.xs}; // Tighter spacing
+    width: 30px;
   }
 `;
 
@@ -587,133 +653,196 @@ export default function InspirationGenerator({
   };
 
   return (
-    <InspirationCard
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-    >
-      <InspirationCardHeader>
-        <CardIconWrapper>
-          <Icon icon={FaMusic} size={20} />
-        </CardIconWrapper>
-        <CardTitle>Inspiration Generator</CardTitle>
-      </InspirationCardHeader>
-      
-      <DiceButton
-        whileHover={{ rotate: 12, scale: 1.1 }}
-        whileTap={{ rotate: 360, scale: 0.9 }}
-        onClick={rollDice}
-        animate={animate ? { rotate: [0, 360], scale: [1, 1.2, 1] } : {}}
-        transition={animate ? { duration: 0.5, ease: "easeOut" } : {}}
+    <div style={{ overflow: 'visible' }}>
+      <InspirationCard
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <IconWrapper><Icon icon={FaDice} size={24} /></IconWrapper>
-      </DiceButton>
+        <InspirationCardHeader>
+          <CardIconWrapper>
+            <Icon icon={FaMusic} size={20} />
+          </CardIconWrapper>
+          <CardTitle>Inspiration Generator</CardTitle>
+        </InspirationCardHeader>
+        
+        <DiceButton
+          whileHover={{ rotate: 12, scale: 1.1 }}
+          whileTap={{ rotate: 360, scale: 0.9 }}
+          onClick={rollDice}
+          animate={animate ? { rotate: [0, 360], scale: [1, 1.2, 1] } : {}}
+          transition={animate ? { duration: 0.5, ease: "easeOut" } : {}}
+        >
+          <IconWrapper><Icon icon={FaDice} size={24} /></IconWrapper>
+        </DiceButton>
 
-      <StyledTable>
-        <tbody>
-          <TableRow>
-            <TableHeader>
-              <LockIconWrapper 
-                $isLocked={locked.root} 
-                onClick={() => toggleLock("root")}
-              >
-                <IconWrapper>
-                  {locked.root ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
-                </IconWrapper>
-              </LockIconWrapper>
-            </TableHeader>
-            <TableCell>Root</TableCell>
-            <ValueCell>{rootEl}</ValueCell>
-          </TableRow>
-          
-          <TableRow>
-            <TableHeader>
-              <LockIconWrapper 
-                $isLocked={locked.scale} 
-                onClick={() => toggleLock("scale")}
-              >
-                <IconWrapper>
-                  {locked.scale ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
-                </IconWrapper>
-              </LockIconWrapper>
-            </TableHeader>
-            <TableCell>Scale</TableCell>
-            <ValueCell>{scaleEl}</ValueCell>
-          </TableRow>
-
-          <TableRow>
-            <TableHeader>
-              <LockIconWrapper $isLocked={locked.bpm} onClick={() => toggleLock("bpm")}>
-                <IconWrapper>
-                  {locked.bpm ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
-                </IconWrapper>
-              </LockIconWrapper>
-            </TableHeader>
-            <TableCell>BPM</TableCell>
-            <ValueCell>{bpmEl}</ValueCell>
-          </TableRow>
-
-          <TableRow>
-            <TableHeader>
-              <LockIconWrapper $isLocked={locked.sound} onClick={() => toggleLock("sound")}>
-                <IconWrapper>
-                  {locked.sound ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
-                </IconWrapper>
-              </LockIconWrapper>
-            </TableHeader>
-            <TableCell>Sound</TableCell>
-            <ValueCell className={getValueCellClass(soundEl)}>{soundEl}</ValueCell>
-          </TableRow>
-        </tbody>
-      </StyledTable>
-      
-      {/* Add Chord Degrees section */}
-      <SectionTitle>Chord Degrees</SectionTitle>
-      <ChordDegreeContainer>
-        {romanNumerals.map((numeral, index) => (
-          <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <ChordDegree 
-              $isSelected={selectedChord === index}
-              onClick={() => handleChordClick(index)}
-            >
-              {numeral}
-            </ChordDegree>
-            <ChordName $isSelected={selectedChord === index}>
-              {getChordNames()[index]}
-            </ChordName>
-          </div>
-        ))}
-      </ChordDegreeContainer>
-      
-      {/* Update Scale Tones visualization to include intervals */}
-      <SectionTitle>Scale Tones</SectionTitle>
-      <ScaleTonesRow>
-        {tonesArrEl.slice(0, 8).map((note, index) => {
-          // Get the interval for this note to the next note
-          const intervals = getSemitoneIntervals(scaleEl);
-          // Only show interval if it's not the last note
-          const shouldShowInterval = index < 7;
-          const interval = shouldShowInterval ? intervals[index] : null;
-          
-          return (
-            <ScaleToneNote 
-              key={index}
-              $highlight={getHighlightType(index)}
-            >
-              {note}
-              {shouldShowInterval && interval !== null && (
-                <IntervalLabel 
-                  title={interval === 1 ? 
-                    "Half Step (1 semitone)" : 
-                    `Whole Step${interval > 2 ? "s" : ""} (${interval} semitones)`}
+        <StyledTable>
+          <tbody>
+            <TableRow>
+              <SpacerCell />
+              <TableHeader>
+                <LockIconWrapper 
+                  $isLocked={locked.root} 
+                  onClick={() => toggleLock("root")}
                 >
-                  +{interval}
-                </IntervalLabel>
-              )}
-            </ScaleToneNote>
-          );
-        })}
-      </ScaleTonesRow>
-    </InspirationCard>
+                  <IconWrapper>
+                    {locked.root ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
+                  </IconWrapper>
+                </LockIconWrapper>
+              </TableHeader>
+              <LabelCell>Root</LabelCell>
+              <ValueCell>{rootEl}</ValueCell>
+            </TableRow>
+            
+            {/* Separator after Root row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+            
+            <TableRow>
+              <SpacerCell />
+              <TableHeader>
+                <LockIconWrapper 
+                  $isLocked={locked.scale} 
+                  onClick={() => toggleLock("scale")}
+                >
+                  <IconWrapper>
+                    {locked.scale ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
+                  </IconWrapper>
+                </LockIconWrapper>
+              </TableHeader>
+              <LabelCell>Scale</LabelCell>
+              <ValueCell>{scaleEl}</ValueCell>
+            </TableRow>
+
+            {/* Separator after Scale row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+
+            <TableRow>
+              <SpacerCell />
+              <TableHeader>
+                <LockIconWrapper $isLocked={locked.bpm} onClick={() => toggleLock("bpm")}>
+                  <IconWrapper>
+                    {locked.bpm ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
+                  </IconWrapper>
+                </LockIconWrapper>
+              </TableHeader>
+              <LabelCell>BPM</LabelCell>
+              <ValueCell>{bpmEl}</ValueCell>
+            </TableRow>
+
+            {/* Separator after BPM row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+
+            <TableRow>
+              <SpacerCell />
+              <TableHeader>
+                <LockIconWrapper $isLocked={locked.sound} onClick={() => toggleLock("sound")}>
+                  <IconWrapper>
+                    {locked.sound ? <Icon icon={FaLock} size={16} /> : <Icon icon={FaUnlock} size={16} />}
+                  </IconWrapper>
+                </LockIconWrapper>
+              </TableHeader>
+              <LabelCell>Sound</LabelCell>
+              <ValueCell className={getValueCellClass(soundEl)}>{soundEl}</ValueCell>
+            </TableRow>
+            
+            {/* Separator after Sound row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+            
+            {/* Chord Degrees section integrated into the table - with empty TableHeader for alignment */}
+            <TableRow className="chord-scale-row">
+              <SpacerCell />
+              <TableHeader />
+              <LabelCell>
+                Chord<br />Degrees
+              </LabelCell>
+              <ExtendedInfoCell>
+                <ChordDegreesContainer>
+                  {romanNumerals.slice(0, 7).map((numeral, index) => (
+                    <ItemWrapper key={index}>
+                      <ChordDegree 
+                        $isSelected={selectedChord === index}
+                        onClick={() => handleChordClick(index)}
+                      >
+                        {numeral}
+                      </ChordDegree>
+                      <ChordName $isSelected={selectedChord === index}>
+                        {getChordNames()[index]}
+                      </ChordName>
+                    </ItemWrapper>
+                  ))}
+                </ChordDegreesContainer>
+              </ExtendedInfoCell>
+            </TableRow>
+            
+            {/* Separator after Chord Degrees row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+            
+            {/* Scale Tones integrated into the table - with empty TableHeader for alignment */}
+            <TableRow className="chord-scale-row">
+              <SpacerCell />
+              <TableHeader />
+              <LabelCell>
+                Scale<br />Tones
+              </LabelCell>
+              <ExtendedInfoCell>
+                <ScaleTonesContainer>
+                  {tonesArrEl.slice(0, 7).map((note, index) => {
+                    const intervals = getSemitoneIntervals(scaleEl);
+                    const shouldShowInterval = index < 7;
+                    const interval = shouldShowInterval ? intervals[index] : null;
+                    
+                    return (
+                      <ItemWrapper key={index}>
+                        <ScaleToneNote 
+                          $highlight={getHighlightType(index)}
+                        >
+                          {note}
+                          {shouldShowInterval && interval !== null && (
+                            <IntervalLabel 
+                              title={interval === 1 ? 
+                                "Half Step (1 semitone)" : 
+                                `Whole Step${interval > 2 ? "s" : ""} (${interval} semitones)`}
+                            >
+                              +{interval}
+                            </IntervalLabel>
+                          )}
+                        </ScaleToneNote>
+                      </ItemWrapper>
+                    );
+                  })}
+                </ScaleTonesContainer>
+              </ExtendedInfoCell>
+            </TableRow>
+            
+            {/* Separator after Scale Tones row */}
+            <tr>
+              <SeparatorCell colSpan={3}>
+                <Divider />
+              </SeparatorCell>
+            </tr>
+          </tbody>
+        </StyledTable>
+      </InspirationCard>
+    </div>
   );
 }
