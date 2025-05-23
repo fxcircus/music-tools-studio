@@ -22,6 +22,7 @@ const TimerDisplay = styled(motion.div)`
   width: 180px;
   margin: 0 auto;
   transition: all ${({ theme }) => theme.transitions.normal};
+  cursor: pointer;
 `;
 
 const TimerControls = styled.div`
@@ -116,6 +117,9 @@ export default function PomodoroTimer() {
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.05, boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)' }}
         transition={{ type: 'spring', stiffness: 300 }}
+        onClick={toggleCountdown}
+        whileTap={{ scale: 0.95 }}
+        aria-label={isCounting ? "Pause timer" : "Start timer"}
       >
         {secondsToMinutes(time)}
       </TimerDisplay>

@@ -28,6 +28,7 @@ const MetronomePendulum = styled(motion.div)`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   transform-origin: bottom center;
   box-shadow: ${({ theme }) => theme.shadows.small};
+  cursor: pointer;
   
   &::after {
     content: '';
@@ -43,7 +44,7 @@ const MetronomePendulum = styled(motion.div)`
   }
 `;
 
-const MetronomeBase = styled.div`
+const MetronomeBase = styled(motion.div)`
   width: 200px;
   height: 25px;
   background: ${({ theme }) => theme.colors.accentGradient};
@@ -51,6 +52,7 @@ const MetronomeBase = styled.div`
   position: absolute;
   bottom: 0;
   box-shadow: ${({ theme }) => theme.shadows.medium};
+  cursor: pointer;
 `;
 
 const BpmDisplay = styled.div`
@@ -571,7 +573,11 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
             )}
             
             <MetronomeDisplay>
-                <MetronomeBase />
+                <MetronomeBase 
+                    onClick={toggleMetronome}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                />
                 <MetronomePendulum 
                     key={`pendulum-${bpm}-${metronomePlaying}`}
                     animate={{ 
@@ -586,6 +592,9 @@ const Metronome: FC<LoaderProps> = ({ bpm: initialBpm }) => {
                         duration: 0.3,
                         ease: "easeOut"
                     }}
+                    onClick={toggleMetronome}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 />
             </MetronomeDisplay>
             
