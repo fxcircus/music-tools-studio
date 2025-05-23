@@ -3,23 +3,50 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaDice, FaLock, FaUnlock, FaMusic } from 'react-icons/fa';
+import { FaDice, FaLock, FaUnlock, FaMusic, FaInfoCircle } from 'react-icons/fa';
 import { Card, CardTitle, CardIconWrapper } from '../common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
 // Chord quality mapping for different modes
-const chordQualities: Record<string, string[]> = {
+const chordQualities: Record<string, (string | null)[]> = {
   Major: ['', 'm', 'm', '', '', 'm', 'dim'],
   Minor: ['m', 'dim', '', 'm', 'm', '', ''],
   Dorian: ['m', 'm', '', '', 'm', 'dim', ''],
   Phrygian: ['m', '', '', 'm', 'dim', '', 'm'],
   Lydian: ['', '', 'm', 'dim', '', 'm', 'm'],
   Mixolydian: ['', 'm', 'dim', '', 'm', 'm', ''],
-  Locrian: ['dim', '', 'm', 'm', '', 'm', '']
+  Locrian: ['dim', '', 'm', 'm', '', 'm', ''],
+  "Harmonic Minor": ['m', 'dim', 'aug', 'm', '', '', 'dim'],
+  "Melodic Minor": ['m', 'm', 'aug', '', '', 'dim', 'dim'],
+  "Hungarian Minor": ['m', '', 'aug', '', 'dim', '', 'dim'],
+  "Double Harmonic": ['', '', 'aug', 'm', '', '', 'dim'],
+  "Phrygian Dominant": ['', '', 'aug', 'm', 'dim', '', ''],
+  "Pentatonic Major": ['', 'm', null, '', 'm', null, null],
+  "Pentatonic Minor": ['m', null, '', 'm', null, '', null],
+  "Blues": ['', null, '', 'm', '+5', null, ''],
 };
 
 // Roman numeral for chord degrees
 const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii'];
+
+// Scale note count mapping
+const scaleNoteCounts: Record<string, number> = {
+  "Pentatonic Major": 5,
+  "Pentatonic Minor": 5,
+  "Blues": 6,
+  "Major": 7,
+  "Minor": 7,
+  "Dorian": 7,
+  "Phrygian": 7,
+  "Lydian": 7,
+  "Mixolydian": 7,
+  "Locrian": 7,
+  "Harmonic Minor": 7,
+  "Melodic Minor": 7,
+  "Hungarian Minor": 7,
+  "Double Harmonic": 7,
+  "Phrygian Dominant": 7,
+};
 
 type LockedState = {
   root: boolean;
@@ -135,11 +162,13 @@ const LabelCell = styled.td`
   height: 100%;
   text-align: left;
   white-space: nowrap;
+  padding-left: ${({ theme }) => theme.spacing.md};
   
   @media (max-width: 768px) {
     width: 100px;
-    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
-    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+    padding-left: ${({ theme }) => theme.spacing.sm};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
   }
 `;
 
@@ -152,8 +181,8 @@ const TableCell = styled.td`
   height: 100%;
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
-    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
   }
 `;
 
@@ -167,6 +196,7 @@ const ValueCell = styled.td`
   overflow: hidden;
   vertical-align: middle;
   height: 100%;
+  padding-right: ${({ theme }) => theme.spacing.lg};
   
   // Dynamically adjust font size for long content
   &.long-content {
@@ -178,11 +208,12 @@ const ValueCell = styled.td`
   }
   
   @media (max-width: 768px) {
-    padding: ${({ theme }) => `${theme.spacing.xs} 0`}; // Smaller padding
-    font-size: ${({ theme }) => theme.fontSizes.sm}; // Smaller font size by default on mobile
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+    padding-right: ${({ theme }) => theme.spacing.md};
+    font-size: ${({ theme }) => theme.fontSizes.sm};
     
     &.long-content, &.very-long-content {
-      font-size: ${({ theme }) => theme.fontSizes.xs}; // Even smaller for long content
+      font-size: ${({ theme }) => theme.fontSizes.xs};
     }
   }
 `;
@@ -208,37 +239,70 @@ const ExtendedInfoCell = styled.td`
   }
 `;
 
-const ChordDegreesContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: ${({ theme }) => theme.spacing.xs};
-  overflow-x: visible;
-  padding-right: ${({ theme }) => theme.spacing.sm};
-  margin-left: auto;
-  width: fit-content;
+const TooltipWrapper = styled.div`
   position: relative;
-  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: ${({ theme }) => theme.colors.card};
+  color: ${({ theme }) => theme.colors.text};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  box-shadow: ${({ theme }) => theme.shadows.medium};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  opacity: 0;
+  visibility: hidden;
+  transition: all ${({ theme }) => theme.transitions.fast};
   
-  @media (max-width: 768px) {
-    justify-content: flex-end;
-    padding-right: ${({ theme }) => theme.spacing.xs};
+  ${TooltipWrapper}:hover & {
+    opacity: 1;
+    visibility: visible;
   }
 `;
 
-const ScaleTonesContainer = styled.div`
+// Update the ChordDegreesContainer to handle dynamic spacing
+const ChordDegreesContainer = styled.div<{ $noteCount: number }>`
   display: flex;
-  justify-content: flex-end;
-  gap: ${({ theme }) => theme.spacing.xs};
+  justify-content: ${({ $noteCount }) => $noteCount < 7 ? 'center' : 'flex-start'};
+  gap: ${({ theme, $noteCount }) => $noteCount < 6 ? theme.spacing.md : theme.spacing.xs};
   overflow-x: visible;
   padding-right: ${({ theme }) => theme.spacing.sm};
-  margin-left: auto;
   width: fit-content;
   position: relative;
   z-index: 10;
   
   @media (max-width: 768px) {
-    justify-content: flex-end;
+    justify-content: ${({ $noteCount }) => $noteCount < 7 ? 'center' : 'flex-start'};
     padding-right: ${({ theme }) => theme.spacing.xs};
+    gap: ${({ theme, $noteCount }) => $noteCount < 6 ? theme.spacing.sm : theme.spacing.xs};
+  }
+`;
+
+// Update the ScaleTonesContainer to handle dynamic spacing
+const ScaleTonesContainer = styled.div<{ $noteCount: number }>`
+  display: flex;
+  justify-content: ${({ $noteCount }) => $noteCount < 7 ? 'center' : 'flex-start'};
+  gap: ${({ theme, $noteCount }) => $noteCount < 6 ? theme.spacing.md : theme.spacing.xs};
+  overflow-x: visible;
+  padding-right: ${({ theme }) => theme.spacing.sm};
+  width: fit-content;
+  position: relative;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    justify-content: ${({ $noteCount }) => $noteCount < 7 ? 'center' : 'flex-start'};
+    padding-right: ${({ theme }) => theme.spacing.xs};
+    gap: ${({ theme, $noteCount }) => $noteCount < 6 ? theme.spacing.sm : theme.spacing.xs};
   }
 `;
 
@@ -292,8 +356,8 @@ const ChordDegree = styled.div<{ $isSelected: boolean }>`
   }
   
   @media (max-width: 768px) {
-    min-width: 25px; // Smaller min-width on mobile
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`}; // Smaller padding
+    min-width: 25px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
   }
 `;
 
@@ -306,7 +370,7 @@ const ChordName = styled.div<{ $isSelected: boolean }>`
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   
   @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.fontSizes.xs}; // Smaller font on mobile
+    font-size: ${({ theme }) => theme.fontSizes.xs};
   }
 `;
 
@@ -314,7 +378,7 @@ const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.sm}`};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background-color: ${({ $highlight, theme }) => 
     $highlight === 'root' 
@@ -330,10 +394,14 @@ const ScaleToneNote = styled.div<{ $highlight: 'root' | 'chord' | 'none' }>`
   min-width: 30px;
   text-align: center;
   transition: all ${({ theme }) => theme.transitions.fast};
+  height: 100%;
+  min-height: 48px;
+  justify-content: center;
   
   @media (max-width: 768px) {
     min-width: 25px;
     padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+    min-height: 40px;
   }
 `;
 
@@ -372,7 +440,8 @@ const ItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40px; // Fixed width to ensure alignment
+  width: 40px;
+  height: 100%;
   
   @media (max-width: 768px) {
     width: 30px;
@@ -446,6 +515,14 @@ export default function InspirationGenerator({
     "Lydian",
     "Mixolydian",
     "Locrian",
+    "Harmonic Minor",
+    "Melodic Minor",
+    "Hungarian Minor",
+    "Double Harmonic",
+    "Phrygian Dominant",
+    "Pentatonic Major",
+    "Pentatonic Minor",
+    "Blues",
   ], []);
 
   // your original pattern text for the "Tones" row
@@ -457,6 +534,14 @@ export default function InspirationGenerator({
     Lydian:     "T - T - T - S - T - T - S",
     Mixolydian: "T - T - S - T - T - S - T",
     Locrian:    "S - T - T - S - T - T - T",
+    "Harmonic Minor": "T - S - T - T - S - TS - S",
+    "Melodic Minor":  "T - S - T - T - T - T - S",
+    "Hungarian Minor": "T - S - TS - S - S - TS - S",
+    "Double Harmonic": "S - TS - S - T - S - TS - S",
+    "Phrygian Dominant": "S - TS - S - T - S - T - T",
+    "Pentatonic Major": "T - T - TS - T - TS",
+    "Pentatonic Minor": "TS - T - T - TS - T",
+    "Blues": "TS - T - S - S - TS - T",
   }), []);
 
   // semitone steps for computing actual notes
@@ -468,6 +553,14 @@ export default function InspirationGenerator({
     Lydian:     [2, 2, 2, 1, 2, 2, 1],
     Mixolydian: [2, 2, 1, 2, 2, 1, 2],
     Locrian:    [1, 2, 2, 1, 2, 2, 2],
+    "Harmonic Minor": [2, 1, 2, 2, 1, 3, 1],
+    "Melodic Minor":  [2, 1, 2, 2, 2, 2, 1],
+    "Hungarian Minor": [2, 1, 3, 1, 1, 3, 1],
+    "Double Harmonic": [1, 3, 1, 2, 1, 3, 1],
+    "Phrygian Dominant": [1, 3, 1, 2, 1, 2, 2],
+    "Pentatonic Major": [2, 2, 3, 2, 3],
+    "Pentatonic Minor": [3, 2, 2, 3, 2],
+    "Blues": [3, 2, 1, 1, 3, 2],
   }), []);
 
   // Memoize the function to avoid recreation on each render
@@ -478,16 +571,27 @@ export default function InspirationGenerator({
         const intervals = scaleIntervals[mode as keyof typeof scaleIntervals];
         let idx = notes.indexOf(root);
         const result = [root];
+        
+        // Generate scale tones based on intervals
         for (let step of intervals) {
           idx = (idx + step) % notes.length;
           result.push(notes[idx]);
         }
-        return result;
+        
+        // For scales with fewer than 7 notes, only return the actual scale notes
+        // without repeating the octave
+        const noteCount = scaleNoteCounts[mode] || 7;
+        if (noteCount < 7) {
+          return result.slice(0, noteCount);
+        }
+        
+        return result.slice(0, 8); // Return 8 notes for 7-note scales (includes octave)
       }
+      
       // Fallback to C Major if mode is invalid
       return ["C", "D", "E", "F", "G", "A", "B", "C"];
     },
-    [notes, scaleIntervals]
+    [notes, scaleIntervals, scaleNoteCounts]
   );
 
   // initialize to C Major
@@ -586,49 +690,120 @@ export default function InspirationGenerator({
     return '';
   };
 
-  // Build chord names based on current root and scale
+  // Update the getChordNames function for better chord generation logic
   const getChordNames = () => {
-    if (!rootEl || !scaleEl || !tonesArrEl || tonesArrEl.length < 7) {
+    if (!rootEl || !scaleEl || !tonesArrEl || tonesArrEl.length < 3) {
       return ['C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim'];
     }
 
     const qualities = chordQualities[scaleEl as keyof typeof chordQualities] || chordQualities.Major;
+    const noteCount = scaleNoteCounts[scaleEl] || 7;
     
-    return tonesArrEl.slice(0, 7).map((note, index) => {
-      return `${note}${qualities[index]}`;
+    return romanNumerals.slice(0, 7).map((_, index) => {
+      // For scales with fewer notes, only generate chords where possible
+      if (index >= noteCount) {
+        return "—";
+      }
+      
+      // Check if the chord quality is null (indicating no valid chord can be formed)
+      if (qualities[index] === null) {
+        return "—";
+      }
+      
+      // For scales with 5 or 6 notes, verify that we can form a proper triad
+      if (noteCount < 7) {
+        // Check if we can form a proper triad by building on this scale degree
+        const rootIndex = index;
+        const thirdIndex = (index + 2) % noteCount;
+        const fifthIndex = (index + 4) % noteCount;
+        
+        // Verify that root, third, and fifth are distinct notes
+        const distinct = new Set([rootIndex, thirdIndex, fifthIndex]).size === 3;
+        
+        if (!distinct) {
+          return "—";
+        }
+      }
+      
+      return `${tonesArrEl[index]}${qualities[index] || ''}`;
     });
   };
 
-  // Get highlighted notes based on selected chord
+  // Update getHighlightType function to handle different scale types
   const getHighlightType = (noteIndex: number): 'root' | 'chord' | 'none' => {
     if (selectedChord === null) return 'none';
     
-    // Root is the chord position
+    const noteCount = scaleNoteCounts[scaleEl] || 7;
+    
+    // If this is the root note of the selected chord
     if (noteIndex === selectedChord) return 'root';
     
-    // Special case for IV chord (index 3)
-    if (selectedChord === 3) {
-      // Third is 2 steps up (2 + 3 = 5)
-      if (noteIndex === 5) return 'chord';
-      // Use high octave note (index 7) as the fifth instead of the usual pattern
-      if (noteIndex === 7) return 'chord';
-    } else {
-      // Standard triad pattern for other chords
-      // Third is 2 steps up (wrapping around if needed)
-      const thirdPosition = (selectedChord + 2) % 7;
-      // Fifth is 4 steps up (wrapping around if needed)
-      const fifthPosition = (selectedChord + 4) % 7;
+    // If the scale has fewer than 7 notes, adjust the chord building logic
+    if (noteCount < 7) {
+      // For scales with fewer notes, calculate the third and fifth positions differently
+      const thirdIndex = (selectedChord + 2) % noteCount;
+      const fifthIndex = (selectedChord + 4) % noteCount;
       
-      if (noteIndex === thirdPosition || noteIndex === fifthPosition) {
+      // Highlight the note if it's part of the chord triad
+      if (noteIndex === thirdIndex || noteIndex === fifthIndex) {
         return 'chord';
+      }
+    } else {
+      // Special case for certain 7-note scales
+      if (scaleEl === "Harmonic Minor" || scaleEl === "Double Harmonic" || scaleEl === "Hungarian Minor") {
+        // Handle augmented or diminished chords in these scales specially
+        if (chordQualities[scaleEl as keyof typeof chordQualities][selectedChord] === 'aug') {
+          // For augmented chords, the fifth is raised
+          const thirdIndex = (selectedChord + 2) % 7;
+          // Use the raised fifth if available
+          const fifthIndex = (selectedChord + 4) % 7;
+          const raisedFifthIndex = (selectedChord + 5) % 7;
+          
+          if (noteIndex === thirdIndex || noteIndex === fifthIndex || noteIndex === raisedFifthIndex) {
+            return 'chord';
+          }
+        } else if (chordQualities[scaleEl as keyof typeof chordQualities][selectedChord] === 'dim') {
+          // For diminished chords, the fifth is lowered
+          const thirdIndex = (selectedChord + 2) % 7;
+          const flattenedFifthIndex = (selectedChord + 3) % 7;
+          
+          if (noteIndex === thirdIndex || noteIndex === flattenedFifthIndex) {
+            return 'chord';
+          }
+        } else {
+          // Standard triad pattern for other chords
+          const thirdIndex = (selectedChord + 2) % 7;
+          const fifthIndex = (selectedChord + 4) % 7;
+          
+          if (noteIndex === thirdIndex || noteIndex === fifthIndex) {
+            return 'chord';
+          }
+        }
+      } else {
+        // Standard 7-note scales
+        // Standard triad pattern for most chords
+        const thirdIndex = (selectedChord + 2) % 7;
+        const fifthIndex = (selectedChord + 4) % 7;
+        
+        if (noteIndex === thirdIndex || noteIndex === fifthIndex) {
+          return 'chord';
+        }
       }
     }
     
     return 'none';
   };
 
-  // Handle chord selection
+  // Handle chord selection with improved logic for various scales
   const handleChordClick = (chordIndex: number) => {
+    const noteCount = scaleNoteCounts[scaleEl] || 7;
+    const chordName = getChordNames()[chordIndex];
+    
+    // Don't allow clicking on invalid chord positions
+    if (chordName === "—" || chordIndex >= noteCount) {
+      return;
+    }
+    
     // If clicking the same chord, toggle it off
     if (selectedChord === chordIndex) {
       setSelectedChord(null);
@@ -696,7 +871,7 @@ export default function InspirationGenerator({
             
             {/* Separator after Root row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
@@ -719,7 +894,7 @@ export default function InspirationGenerator({
 
             {/* Separator after Scale row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
@@ -739,7 +914,7 @@ export default function InspirationGenerator({
 
             {/* Separator after BPM row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
@@ -759,7 +934,7 @@ export default function InspirationGenerator({
             
             {/* Separator after Sound row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
@@ -772,27 +947,48 @@ export default function InspirationGenerator({
                 Chord<br />Degrees
               </LabelCell>
               <ExtendedInfoCell>
-                <ChordDegreesContainer>
-                  {romanNumerals.slice(0, 7).map((numeral, index) => (
-                    <ItemWrapper key={index}>
-                      <ChordDegree 
-                        $isSelected={selectedChord === index}
-                        onClick={() => handleChordClick(index)}
-                      >
-                        {numeral}
-                      </ChordDegree>
-                      <ChordName $isSelected={selectedChord === index}>
-                        {getChordNames()[index]}
-                      </ChordName>
-                    </ItemWrapper>
-                  ))}
+                <ChordDegreesContainer $noteCount={scaleNoteCounts[scaleEl] || 7}>
+                  {romanNumerals.slice(0, 7).map((numeral, index) => {
+                    const noteCount = scaleNoteCounts[scaleEl] || 7;
+                    const chordName = getChordNames()[index];
+                    const isValidChord = chordName !== "—";
+                    
+                    // Only show valid chord positions for this scale
+                    if (index >= noteCount) {
+                      return null;
+                    }
+                    
+                    return (
+                      <ItemWrapper key={index}>
+                        <ChordDegree 
+                          $isSelected={selectedChord === index}
+                          onClick={() => isValidChord ? handleChordClick(index) : null}
+                          style={{ opacity: isValidChord ? 1 : 0.5 }}
+                        >
+                          {numeral}
+                        </ChordDegree>
+                        {isValidChord ? (
+                          <ChordName $isSelected={selectedChord === index}>
+                            {chordName}
+                          </ChordName>
+                        ) : (
+                          <TooltipWrapper>
+                            <ChordName $isSelected={false}>
+                              —
+                            </ChordName>
+                            <Tooltip>No standard chord</Tooltip>
+                          </TooltipWrapper>
+                        )}
+                      </ItemWrapper>
+                    );
+                  })}
                 </ChordDegreesContainer>
               </ExtendedInfoCell>
             </TableRow>
             
             {/* Separator after Chord Degrees row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
@@ -805,10 +1001,17 @@ export default function InspirationGenerator({
                 Scale<br />Tones
               </LabelCell>
               <ExtendedInfoCell>
-                <ScaleTonesContainer>
-                  {tonesArrEl.slice(0, 7).map((note, index) => {
+                <ScaleTonesContainer $noteCount={scaleNoteCounts[scaleEl] || 7}>
+                  {tonesArrEl.map((note, index) => {
+                    const noteCount = scaleNoteCounts[scaleEl] || 7;
+                    
+                    // Only show scale degrees for this scale
+                    if (index >= noteCount) {
+                      return null;
+                    }
+                    
                     const intervals = getSemitoneIntervals(scaleEl);
-                    const shouldShowInterval = index < 7;
+                    const shouldShowInterval = index < intervals.length;
                     const interval = shouldShowInterval ? intervals[index] : null;
                     
                     return (
@@ -821,7 +1024,9 @@ export default function InspirationGenerator({
                             <IntervalLabel 
                               title={interval === 1 ? 
                                 "Half Step (1 semitone)" : 
-                                `Whole Step${interval > 2 ? "s" : ""} (${interval} semitones)`}
+                                interval === 3 ? 
+                                  "Step and a Half (3 semitones)" :
+                                  `Whole Step${interval > 2 ? "s" : ""} (${interval} semitones)`}
                             >
                               +{interval}
                             </IntervalLabel>
@@ -836,7 +1041,7 @@ export default function InspirationGenerator({
             
             {/* Separator after Scale Tones row */}
             <tr>
-              <SeparatorCell colSpan={3}>
+              <SeparatorCell colSpan={4}>
                 <Divider />
               </SeparatorCell>
             </tr>
