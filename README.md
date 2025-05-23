@@ -1,22 +1,22 @@
 # Tiles — Tools for Creative Flow
 
-A simple set of tools to help musicians stay creative and focused.
+A set of tools to help musicians stay creative and focused.
 
 ## Live Version
 
-Check out the [live version](https://fxcircus.github.io/music-tools-studio) on GitHub pages or follow the [Local Installation](#local-installation) instructions
+Try [live version](https://fxcircus.github.io/music-tools-studio) on GitHub pages, or follow the [Local Installation](#local-installation) instructions.
 
 ![Tiles](public/tiles_app_screenshot_dark_2025.png)
 
 ## Features
 
-- **⏲️ Flow Timer:** A Pomodoro-style timer to help you stay focused while writing, practicing, or producing.
+- **🍅 Flow Timer:** A Pomodoro-style timer to help you stay focused while writing, practicing, or producing.
 
 - **🎲 Inspiration Generator:** Randomize scales, BPM, and sounds. Lock in what you like and shuffle the rest.
 
-- **🎶 Metronome:** A smooth, visual metronome with BPM controls to keep you in perfect time.
+- **🎶 Metronome:** Follows the BPM from the Inspiration Generator, with manual adjustment in 1-step increments.
 
-- **📝 Notes:** Capture lyrics, chord progressions, FX pedal settings, etc'...
+- **📝 Notes:** Write down lyrics, chord progressions, FX pedal settings, etc'...
 
 - **💾 Save Your Work:** Export your project settings and notes to continue later or share with collaborators. Import previously saved projects with a single click.
 
@@ -29,6 +29,7 @@ Check out the [live version](https://fxcircus.github.io/music-tools-studio) on G
 - **🔀 Framer Motion** for fluid animations 
 - **🔊 Web Audio API**
 - **📦 Node.js**
+- **🎨 React Icons** with Font Awesome, Game Icons and more icon collections
 
 ## Local Installation
 

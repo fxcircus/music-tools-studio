@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaUndo, FaPlay, FaPause, FaCoffee, FaClock } from 'react-icons/fa';
+import { FaUndo, FaPlay, FaPause, FaCoffee } from 'react-icons/fa';
+import { GiTomato } from 'react-icons/gi';
 import ToolCard from '../common/ToolCard';
 import { Icon } from '../../utils/IconHelper';
 
@@ -109,7 +110,7 @@ export default function PomodoroTimer() {
   }, [isCounting, time]);
 
   return (
-    <ToolCard title="Flow Timer" icon={FaClock}>
+    <ToolCard title="Flow Timer" icon={GiTomato}>
       <TimerDisplay
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}

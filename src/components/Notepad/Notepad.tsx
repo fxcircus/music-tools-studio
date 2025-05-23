@@ -26,11 +26,11 @@ const StyledTextArea = styled(TextArea)`
   min-height: 150px;
   flex: 1;
   font-family: 'Inter', 'Roboto', sans-serif;
-  padding: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
   
   @media (max-width: 768px) {
     min-height: 120px;
-    padding: ${({ theme }) => theme.spacing.xs};
+    padding: ${({ theme }) => theme.spacing.sm};
   }
 `;
 
@@ -76,7 +76,7 @@ export default function Notes({ notes, setNotes }: NotesProps) {
         name="newText"
         onChange={handleChange}
         value={text.newText}
-        placeholder="Your musical ideas: lyrics, chord progressions, effect pedal settings..."
+        placeholder="Write down musical ideas, lyrics, or thoughts..."
       />
     </NotesCard>
   );

@@ -96,7 +96,7 @@ export const TextArea = styled.textarea`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text};
   font-size: ${({ theme }) => theme.fontSizes.md};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
   transition: all ${({ theme }) => theme.transitions.fast};
   resize: vertical;
   min-height: 150px;

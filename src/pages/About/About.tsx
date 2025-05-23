@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaGithub, FaReact, FaNodeJs } from 'react-icons/fa';
+import { FaGithub, FaReact, FaNodeJs, FaIcons } from 'react-icons/fa';
 import { Container, Card, CardHeader, CardTitle, CardIconWrapper } from '../../components/common/StyledComponents';
 import { Icon } from '../../utils/IconHelper';
 
@@ -146,7 +146,7 @@ const AboutPage = () => {
           <SectionTitle>Features</SectionTitle>
           <List>
             <ListItem>
-              <Strong>⏲️ Flow Timer:</Strong> 
+              <Strong>🍅 Flow Timer:</Strong> 
               <NestedList>
                 <ListItem>A simple Pomodoro-style timer to help you stay focused while writing, practicing, or producing.</ListItem>
               </NestedList>
@@ -160,13 +160,13 @@ const AboutPage = () => {
             <ListItem>
               <Strong>🎶 Metronome:</Strong>
               <NestedList>
-                <ListItem>A smooth, visual metronome with BPM controls to keep you in perfect time.</ListItem>
+                <ListItem>Follows the BPM from the Inspiration Generator, with manual adjustment in 1-step increments.</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
               <Strong>📝 Notes:</Strong>
               <NestedList>
-                <ListItem>Capture lyrics, chord progressions, FX pedal settings, etc'...</ListItem>
+                <ListItem>Write down lyrics, chord progressions, FX pedal settings, etc'...</ListItem>
               </NestedList>
             </ListItem>
             <ListItem>
@@ -207,11 +207,20 @@ const AboutPage = () => {
               <IconContainer><Icon icon={FaNodeJs} size={16} /></IconContainer>
               Node.js
             </TechItem>
+            <TechItem>
+              <IconContainer><Icon icon={FaIcons} size={16} /></IconContainer>
+              React Icons
+            </TechItem>
           </TechList>
           <Paragraph style={{ marginTop: '1rem' }}>
             <StyledLink href="https://www.npmjs.com/package/tone" target="_blank" rel="noopener noreferrer">
               Tone.js
             </StyledLink> Audio engine for the metronome.
+          </Paragraph>
+          <Paragraph>
+            <StyledLink href="https://react-icons.github.io/react-icons/" target="_blank" rel="noopener noreferrer">
+              React Icons
+            </StyledLink> providing Font Awesome, Game Icons and more icon collections.
           </Paragraph>
         </Section>
       </AboutCard>
